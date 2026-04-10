@@ -20,3 +20,24 @@ services:
         - action: sync+restart
           path: ./apps/nest_rest_api
           target: /app
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile.dev
+      target: development
+    ports:
+      - "5173:5173"
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/web
+          target: /app
+          ignore:
+            - node_modules
+            - .git/
+        - action: rebuild
+          path: ./apps/web/package.json
+        - action: sync+restart
+          path: ./apps/web
+          target: /app
