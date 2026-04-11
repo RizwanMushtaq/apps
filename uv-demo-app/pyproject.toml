@@ -1,0 +1,12 @@
+[project]
+name = "uv-demo-app"
+version = "0.1.0"
+description = "demo app to play around with uv"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "requests>=2.33.1",
+]
+
+
+
