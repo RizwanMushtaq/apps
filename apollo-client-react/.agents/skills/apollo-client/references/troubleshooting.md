@@ -24,11 +24,11 @@
 import { ApolloProvider } from "@apollo/client";
 
 function App() {
-  return (
-    <ApolloProvider client={client}>
-      <YourApp />
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <YourApp />
+        </ApolloProvider>
+    );
 }
 ```
 
@@ -41,33 +41,33 @@ function App() {
 ```tsx
 // Single client (recommended)
 const client = new ApolloClient({
-  /* ... */
+    /* ... */
 });
 
 export function App() {
-  return (
-    <ApolloProvider client={client}>
-      <Router />
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <Router />
+        </ApolloProvider>
+    );
 }
 
 // Multiple clients (rare use case)
 const publicClient = new ApolloClient({
-  uri: "/public/graphql",
-  cache: new InMemoryCache(),
+    uri: "/public/graphql",
+    cache: new InMemoryCache(),
 });
 const adminClient = new ApolloClient({
-  uri: "/admin/graphql",
-  cache: new InMemoryCache(),
+    uri: "/admin/graphql",
+    cache: new InMemoryCache(),
 });
 
 function AdminSection() {
-  return (
-    <ApolloProvider client={adminClient}>
-      <AdminDashboard />
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={adminClient}>
+            <AdminDashboard />
+        </ApolloProvider>
+    );
 }
 ```
 
@@ -80,49 +80,49 @@ function AdminSection() {
 ```tsx
 // Bad - new client on every render
 function App() {
-  const client = new ApolloClient({
-    /* ... */
-  }); // Don't do this!
-  return <ApolloProvider client={client}>...</ApolloProvider>;
+    const client = new ApolloClient({
+        /* ... */
+    }); // Don't do this!
+    return <ApolloProvider client={client}>...</ApolloProvider>;
 }
 
 // Module-level client definition
 // Okay if there is a 100% guarantee this application will never use SSR
 const client = new ApolloClient({
-  /* ... */
+    /* ... */
 });
 function App() {
-  return <ApolloProvider client={client}>...</ApolloProvider>;
+    return <ApolloProvider client={client}>...</ApolloProvider>;
 }
 
 // Good - store Apollo Client in a ref that is initialized once
 function useApolloClient(makeApolloClient: () => ApolloClient): ApolloClient {
-  const storeRef = useRef<ApolloClient | null>(null);
-  if (!storeRef.current) {
-    storeRef.current = makeApolloClient();
-  }
-  return storeRef.current;
+    const storeRef = useRef<ApolloClient | null>(null);
+    if (!storeRef.current) {
+        storeRef.current = makeApolloClient();
+    }
+    return storeRef.current;
 }
 
 // Better - singleton global in non-SSR environments to survive unmounts
 const singleton = Symbol.for("ApolloClientSingleton");
 declare global {
-  interface Window {
-    [singleton]?: ApolloClient;
-  }
+    interface Window {
+        [singleton]?: ApolloClient;
+    }
 }
 
 function useApolloClient(makeApolloClient: () => ApolloClient): ApolloClient {
-  const storeRef = useRef<ApolloClient | null>(null);
-  if (!storeRef.current) {
-    if (typeof window === "undefined") {
-      storeRef.current = makeApolloClient();
-    } else {
-      window[singleton] ??= makeApolloClient();
-      storeRef.current = window[singleton];
+    const storeRef = useRef<ApolloClient | null>(null);
+    if (!storeRef.current) {
+        if (typeof window === "undefined") {
+            storeRef.current = makeApolloClient();
+        } else {
+            window[singleton] ??= makeApolloClient();
+            storeRef.current = window[singleton];
+        }
     }
-  }
-  return storeRef.current;
+    return storeRef.current;
 }
 // Note: this second option might need manual removal between tests
 ```
@@ -137,12 +137,12 @@ function useApolloClient(makeApolloClient: () => ApolloClient): ApolloClient {
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    // Ensure proper identification
-    Product: {
-      keyFields: ["id"], // or ['sku'] if no id field
+    typePolicies: {
+        // Ensure proper identification
+        Product: {
+            keyFields: ["id"], // or ['sku'] if no id field
+        },
     },
-  },
 });
 ```
 
@@ -150,10 +150,10 @@ const cache = new InMemoryCache({
 
 ```tsx
 const [deleteProduct] = useMutation(DELETE_PRODUCT, {
-  update: (cache, { data }) => {
-    cache.evict({ id: cache.identify(data.deleteProduct) });
-    cache.gc();
-  },
+    update: (cache, { data }) => {
+        cache.evict({ id: cache.identify(data.deleteProduct) });
+        cache.gc();
+    },
 });
 ```
 
@@ -161,7 +161,7 @@ const [deleteProduct] = useMutation(DELETE_PRODUCT, {
 
 ```tsx
 const { data } = useQuery(GET_PRODUCTS, {
-  fetchPolicy: "cache-and-network", // Always fetch fresh data
+    fetchPolicy: "cache-and-network", // Always fetch fresh data
 });
 ```
 
@@ -173,18 +173,18 @@ const { data } = useQuery(GET_PRODUCTS, {
 
 ```tsx
 const [createProduct] = useMutation(CREATE_PRODUCT, {
-  update: (cache, { data }) => {
-    const existing = cache.readQuery<{ products: Product[] }>({
-      query: GET_PRODUCTS,
-    });
+    update: (cache, { data }) => {
+        const existing = cache.readQuery<{ products: Product[] }>({
+            query: GET_PRODUCTS,
+        });
 
-    cache.writeQuery({
-      query: GET_PRODUCTS,
-      data: {
-        products: [...(existing?.products ?? []), data.createProduct],
-      },
-    });
-  },
+        cache.writeQuery({
+            query: GET_PRODUCTS,
+            data: {
+                products: [...(existing?.products ?? []), data.createProduct],
+            },
+        });
+    },
 });
 ```
 
@@ -196,18 +196,18 @@ const [createProduct] = useMutation(CREATE_PRODUCT, {
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        products: {
-          keyArgs: ["category"], // Only category creates new cache entries
-          merge(existing = [], incoming) {
-            return [...existing, ...incoming];
-          },
+    typePolicies: {
+        Query: {
+            fields: {
+                products: {
+                    keyArgs: ["category"], // Only category creates new cache entries
+                    merge(existing = [], incoming) {
+                        return [...existing, ...incoming];
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -226,10 +226,10 @@ console.log(client.cache.extract());
 
 ```graphql
 query GetUsers {
-  users {
-    id # Always include id
-    name
-  }
+    users {
+        id # Always include id
+        name
+    }
 }
 ```
 
@@ -248,17 +248,17 @@ import { useQuery } from "@apollo/client/react";
 import { GetUsersDocument, GetUsersQuery } from "./generated/graphql";
 
 function UserList() {
-  // Fully typed without manual type annotations
-  const { data, loading, error } = useQuery(GetUsersDocument);
+    // Fully typed without manual type annotations
+    const { data, loading, error } = useQuery(GetUsersDocument);
 
-  // data.users is automatically typed as GetUsersQuery['users']
-  return (
-    <ul>
-      {data?.users.map((user) => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  );
+    // data.users is automatically typed as GetUsersQuery['users']
+    return (
+        <ul>
+            {data?.users.map((user) => (
+                <li key={user.id}>{user.name}</li>
+            ))}
+        </ul>
+    );
 }
 ```
 
@@ -301,28 +301,28 @@ query GetUserNames {
 ```graphql
 # Bad - separate queries
 query GetUser($id: ID!) {
-  user(id: $id) {
-    id
-    name
-  }
+    user(id: $id) {
+        id
+        name
+    }
 }
 query GetUserPosts($userId: ID!) {
-  posts(userId: $userId) {
-    id
-    title
-  }
+    posts(userId: $userId) {
+        id
+        title
+    }
 }
 
 # Good - single query
 query GetUserWithPosts($id: ID!) {
-  user(id: $id) {
-    id
-    name
-    posts {
-      id
-      title
+    user(id: $id) {
+        id
+        name
+        posts {
+            id
+            title
+        }
     }
-  }
 }
 ```
 
@@ -335,27 +335,27 @@ query GetUserWithPosts($id: ID!) {
 ```tsx
 // Prefer useFragment with data masking
 const { data } = useFragment({
-  fragment: USER_FRAGMENT,
-  from: { __typename: "User", id },
+    fragment: USER_FRAGMENT,
+    from: { __typename: "User", id },
 });
 
 // Alternative: use @nonreactive directive
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      name
-      # This field won't trigger re-renders when it changes
-      metadata @nonreactive {
-        lastSeen
-        preferences
-      }
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            # This field won't trigger re-renders when it changes
+            metadata @nonreactive {
+                lastSeen
+                preferences
+            }
+        }
     }
-  }
 `;
 
 const { data } = useQuery(GET_USER, {
-  variables: { id },
+    variables: { id },
 });
 ```
 
@@ -365,12 +365,12 @@ const { data } = useQuery(GET_USER, {
 
 ```typescript
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  // DevTools are enabled by default in development
-  // Only configure this when you need to enable them in production
-  devtools: {
-    enabled: true,
-  },
+    cache: new InMemoryCache(),
+    // DevTools are enabled by default in development
+    // Only configure this when you need to enable them in production
+    devtools: {
+        enabled: true,
+    },
 });
 ```
 
@@ -389,10 +389,10 @@ DevTools are enabled by default in development. Only configure this setting if y
 
 ```typescript
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  devtools: {
-    enabled: true, // Set to true to enable in production
-  },
+    cache: new InMemoryCache(),
+    devtools: {
+        enabled: true, // Set to true to enable in production
+    },
 });
 ```
 
@@ -413,16 +413,16 @@ console.log(JSON.stringify(client.cache.extract(), null, 2));
 
 // Check specific object using cache.identify
 console.log(
-  client.cache.readFragment({
-    id: cache.identify({ __typename: "User", id: 1 }),
-    fragment: gql`
-      fragment _ on User {
-        id
-        name
-        email
-      }
-    `,
-  }),
+    client.cache.readFragment({
+        id: cache.identify({ __typename: "User", id: 1 }),
+        fragment: gql`
+            fragment _ on User {
+                id
+                name
+                email
+            }
+        `,
+    }),
 );
 ```
 
@@ -436,11 +436,11 @@ console.log(
 
 ```graphql
 query GetUsers {
-  users {
-    id # Required for caching
-    __typename # Usually added automatically
-    name
-  }
+    users {
+        id # Required for caching
+        __typename # Usually added automatically
+        name
+    }
 }
 ```
 

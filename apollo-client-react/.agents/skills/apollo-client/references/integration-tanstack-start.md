@@ -52,25 +52,29 @@ function RootComponent() {
 In your `router.tsx`, set up your Apollo Client instance and run `routerWithApolloClient`:
 
 ```typescript
-import { routerWithApolloClient, ApolloClient, InMemoryCache } from "@apollo/client-integration-tanstack-start";
+import {
+    routerWithApolloClient,
+    ApolloClient,
+    InMemoryCache,
+} from "@apollo/client-integration-tanstack-start";
 import { HttpLink } from "@apollo/client";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
-  const apolloClient = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({ uri: "https://your-graphql-endpoint.com/graphql" }),
-  });
+    const apolloClient = new ApolloClient({
+        cache: new InMemoryCache(),
+        link: new HttpLink({ uri: "https://your-graphql-endpoint.com/graphql" }),
+    });
 
-  const router = createRouter({
-    routeTree,
-    context: {
-      ...routerWithApolloClient.defaultContext,
-    },
-  });
+    const router = createRouter({
+        routeTree,
+        context: {
+            ...routerWithApolloClient.defaultContext,
+        },
+    });
 
-  return routerWithApolloClient(router, apolloClient);
+    return routerWithApolloClient(router, apolloClient);
 }
 ```
 
@@ -249,8 +253,8 @@ function UserComponent({ queryRef }: { queryRef: QueryRef<GetUserQuery> }) {
 2. **Context Type:** Use `createRootRouteWithContext<ApolloClientIntegration.RouterContext>()` to provide proper TypeScript types for the `preloadQuery` function in loaders.
 
 3. **Loader vs Component Queries:**
-   - Use `preloadQuery` in loaders when you want to start fetching data before the component renders
-   - Use `useSuspenseQuery` directly in components for simpler cases or when data fetching can wait until render
+    - Use `preloadQuery` in loaders when you want to start fetching data before the component renders
+    - Use `useSuspenseQuery` directly in components for simpler cases or when data fetching can wait until render
 
 4. **Streaming SSR:** The integration fully supports React's streaming SSR capabilities. Place `Suspense` boundaries strategically for optimal user experience.
 
@@ -265,7 +269,11 @@ function UserComponent({ queryRef }: { queryRef: QueryRef<GetUserQuery> }) {
 For authentication in TanStack Start with SSR support, you need to handle both server and client environments differently. Use `createIsomorphicFn` to provide environment-specific implementations:
 
 ```typescript
-import { ApolloClient, InMemoryCache, routerWithApolloClient } from "@apollo/client-integration-tanstack-start";
+import {
+    ApolloClient,
+    InMemoryCache,
+    routerWithApolloClient,
+} from "@apollo/client-integration-tanstack-start";
 import { ApolloLink, HttpLink } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { createIsomorphicFn } from "@tanstack/react-start";
@@ -275,47 +283,47 @@ import { routeTree } from "./routeTree.gen";
 
 // Create isomorphic link that uses different implementations per environment
 const createAuthLink = createIsomorphicFn()
-  .server(() => {
-    // Server-only: Can access server-side functions like `getCookies`, `getCookie`, `getSession`, etc. exported from `"@tanstack/react-start/server"`
-    return new SetContextLink(async (prevContext) => {
-      return {
-        headers: {
-          ...prevContext.headers,
-          authorization: getCookie("Authorization"),
-        },
-      };
+    .server(() => {
+        // Server-only: Can access server-side functions like `getCookies`, `getCookie`, `getSession`, etc. exported from `"@tanstack/react-start/server"`
+        return new SetContextLink(async (prevContext) => {
+            return {
+                headers: {
+                    ...prevContext.headers,
+                    authorization: getCookie("Authorization"),
+                },
+            };
+        });
+    })
+    .client(() => {
+        // Client-only: Can access `localStorage` or other browser APIs
+        return new SetContextLink((prevContext) => {
+            return {
+                headers: {
+                    ...prevContext.headers,
+                    authorization: localStorage.getItem("authToken") ?? "",
+                },
+            };
+        });
     });
-  })
-  .client(() => {
-    // Client-only: Can access `localStorage` or other browser APIs
-    return new SetContextLink((prevContext) => {
-      return {
-        headers: {
-          ...prevContext.headers,
-          authorization: localStorage.getItem("authToken") ?? "",
-        },
-      };
-    });
-  });
 
 export function getRouter() {
-  const httpLink = new HttpLink({
-    uri: "https://your-graphql-endpoint.com/graphql",
-  });
+    const httpLink = new HttpLink({
+        uri: "https://your-graphql-endpoint.com/graphql",
+    });
 
-  const apolloClient = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: ApolloLink.from([createAuthLink(), httpLink]),
-  });
+    const apolloClient = new ApolloClient({
+        cache: new InMemoryCache(),
+        link: ApolloLink.from([createAuthLink(), httpLink]),
+    });
 
-  const router = createRouter({
-    routeTree,
-    context: {
-      ...routerWithApolloClient.defaultContext,
-    },
-  });
+    const router = createRouter({
+        routeTree,
+        context: {
+            ...routerWithApolloClient.defaultContext,
+        },
+    });
 
-  return routerWithApolloClient(router, apolloClient);
+    return routerWithApolloClient(router, apolloClient);
 }
 ```
 
@@ -336,30 +344,30 @@ import { routeTree } from "./routeTree.gen";
 import { routerWithApolloClient } from "@apollo/client-integration-tanstack-start";
 
 export function getRouter() {
-  const apolloClient = new ApolloClient({
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            posts: {
-              merge(existing = [], incoming) {
-                return [...existing, ...incoming];
-              },
+    const apolloClient = new ApolloClient({
+        cache: new InMemoryCache({
+            typePolicies: {
+                Query: {
+                    fields: {
+                        posts: {
+                            merge(existing = [], incoming) {
+                                return [...existing, ...incoming];
+                            },
+                        },
+                    },
+                },
             },
-          },
+        }),
+        link: new HttpLink({ uri: "https://your-graphql-endpoint.com/graphql" }),
+    });
+
+    const router = createRouter({
+        routeTree,
+        context: {
+            ...routerWithApolloClient.defaultContext,
         },
-      },
-    }),
-    link: new HttpLink({ uri: "https://your-graphql-endpoint.com/graphql" }),
-  });
+    });
 
-  const router = createRouter({
-    routeTree,
-    context: {
-      ...routerWithApolloClient.defaultContext,
-    },
-  });
-
-  return routerWithApolloClient(router, apolloClient);
+    return routerWithApolloClient(router, apolloClient);
 }
 ```

@@ -27,13 +27,13 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 // Recommended: Use HttpOnly cookies for authentication
 const httpLink = new HttpLink({
-  uri: "https://your-graphql-endpoint.com/graphql",
-  credentials: "include", // Sends cookies with requests (secure when using HttpOnly cookies)
+    uri: "https://your-graphql-endpoint.com/graphql",
+    credentials: "include", // Sends cookies with requests (secure when using HttpOnly cookies)
 });
 
 const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache(),
+    link: httpLink,
+    cache: new InMemoryCache(),
 });
 ```
 
@@ -44,22 +44,22 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
-  uri: "https://your-graphql-endpoint.com/graphql",
+    uri: "https://your-graphql-endpoint.com/graphql",
 });
 
 const authLink = new SetContextLink(({ headers }) => {
-  const token = localStorage.getItem("token");
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    },
-  };
+    const token = localStorage.getItem("token");
+    return {
+        headers: {
+            ...headers,
+            authorization: token ? `Bearer ${token}` : "",
+        },
+    };
 });
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
 });
 ```
 
@@ -70,11 +70,11 @@ import { ApolloProvider } from "@apollo/client";
 import App from "./App";
 
 function Root() {
-  return (
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <App />
+        </ApolloProvider>
+    );
 }
 ```
 
@@ -85,29 +85,29 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
 const GET_USERS = gql`
-  query GetUsers {
-    users {
-      id
-      name
-      email
+    query GetUsers {
+        users {
+            id
+            name
+            email
+        }
     }
-  }
 `;
 
 function UserList() {
-  const { loading, error, data, dataState } = useQuery(GET_USERS);
+    const { loading, error, data, dataState } = useQuery(GET_USERS);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
-  // TypeScript: dataState === "ready" provides better type narrowing than just checking data
-  return (
-    <ul>
-      {data.users.map((user) => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  );
+    // TypeScript: dataState === "ready" provides better type narrowing than just checking data
+    return (
+        <ul>
+            {data.users.map((user) => (
+                <li key={user.id}>{user.name}</li>
+            ))}
+        </ul>
+    );
 }
 ```
 
@@ -117,25 +117,25 @@ function UserList() {
 
 ```tsx
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      name
-      email
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            email
+        }
     }
-  }
 `;
 
 function UserProfile({ userId }: { userId: string }) {
-  const { loading, error, data, dataState } = useQuery(GET_USER, {
-    variables: { id: userId },
-  });
+    const { loading, error, data, dataState } = useQuery(GET_USER, {
+        variables: { id: userId },
+    });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
-  // TypeScript: dataState === "ready" provides better type narrowing than just checking data
-  return <div>{data.user.name}</div>;
+    // TypeScript: dataState === "ready" provides better type narrowing than just checking data
+    return <div>{data.user.name}</div>;
 }
 ```
 
@@ -227,62 +227,62 @@ import { gql, TypedDocumentNode } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
 
 interface CreateUserMutation {
-  createUser: {
-    id: string;
-    name: string;
-    email: string;
-  };
+    createUser: {
+        id: string;
+        name: string;
+        email: string;
+    };
 }
 
 interface CreateUserMutationVariables {
-  input: {
-    name: string;
-    email: string;
-  };
+    input: {
+        name: string;
+        email: string;
+    };
 }
 
 const CREATE_USER: TypedDocumentNode<CreateUserMutation, CreateUserMutationVariables> = gql`
-  mutation CreateUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      name
-      email
+    mutation CreateUser($input: CreateUserInput!) {
+        createUser(input: $input) {
+            id
+            name
+            email
+        }
     }
-  }
 `;
 
 function CreateUserForm() {
-  const [createUser, { loading, error }] = useMutation(CREATE_USER);
+    const [createUser, { loading, error }] = useMutation(CREATE_USER);
 
-  const handleSubmit = async (formData: FormData) => {
-    const { data } = await createUser({
-      variables: {
-        input: {
-          name: formData.get("name") as string,
-          email: formData.get("email") as string,
-        },
-      },
-    });
-    if (data) {
-      console.log("Created user:", data.createUser);
-    }
-  };
+    const handleSubmit = async (formData: FormData) => {
+        const { data } = await createUser({
+            variables: {
+                input: {
+                    name: formData.get("name") as string,
+                    email: formData.get("email") as string,
+                },
+            },
+        });
+        if (data) {
+            console.log("Created user:", data.createUser);
+        }
+    };
 
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit(new FormData(e.currentTarget));
-      }}
-    >
-      <input name="name" placeholder="Name" />
-      <input name="email" placeholder="Email" />
-      <button type="submit" disabled={loading}>
-        {loading ? "Creating..." : "Create User"}
-      </button>
-      {error && <p>Error: {error.message}</p>}
-    </form>
-  );
+    return (
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(new FormData(e.currentTarget));
+            }}
+        >
+            <input name="name" placeholder="Name" />
+            <input name="email" placeholder="Email" />
+            <button type="submit" disabled={loading}>
+                {loading ? "Creating..." : "Create User"}
+            </button>
+            {error && <p>Error: {error.message}</p>}
+        </form>
+    );
 }
 ```
 
@@ -290,37 +290,37 @@ function CreateUserForm() {
 
 ```typescript
 const client = new ApolloClient({
-  // Required: The cache implementation
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          // Field-level cache configuration
+    // Required: The cache implementation
+    cache: new InMemoryCache({
+        typePolicies: {
+            Query: {
+                fields: {
+                    // Field-level cache configuration
+                },
+            },
         },
-      },
+    }),
+
+    // Network layer
+    link: new HttpLink({ uri: "/graphql" }),
+
+    // Avoid defaultOptions if possible as they break TypeScript expectations.
+    // Configure options per-query/mutation instead for better type safety.
+    // defaultOptions: {
+    //   watchQuery: { fetchPolicy: 'cache-and-network' },
+    // },
+
+    // DevTools are enabled by default in development
+    // Only configure when enabling in production
+    devtools: {
+        enabled: true, // Only needed for production
     },
-  }),
 
-  // Network layer
-  link: new HttpLink({ uri: "/graphql" }),
-
-  // Avoid defaultOptions if possible as they break TypeScript expectations.
-  // Configure options per-query/mutation instead for better type safety.
-  // defaultOptions: {
-  //   watchQuery: { fetchPolicy: 'cache-and-network' },
-  // },
-
-  // DevTools are enabled by default in development
-  // Only configure when enabling in production
-  devtools: {
-    enabled: true, // Only needed for production
-  },
-
-  // Custom name for this client instance
-  clientAwareness: {
-    name: "web-client",
-    version: "1.0.0",
-  },
+    // Custom name for this client instance
+    clientAwareness: {
+        name: "web-client",
+        version: "1.0.0",
+    },
 });
 ```
 

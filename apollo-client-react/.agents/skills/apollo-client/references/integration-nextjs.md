@@ -30,20 +30,24 @@ Create an `ApolloClient.ts` file in your app directory:
 
 ```typescript
 import { HttpLink } from "@apollo/client";
-import { registerApolloClient, ApolloClient, InMemoryCache } from "@apollo/client-integration-nextjs";
+import {
+    registerApolloClient,
+    ApolloClient,
+    InMemoryCache,
+} from "@apollo/client-integration-nextjs";
 
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
-  return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      // Use an absolute URL for SSR (relative URLs cannot be used in SSR)
-      uri: "https://your-api.com/graphql",
-      fetchOptions: {
-        // Optional: Next.js-specific fetch options for caching and revalidation
-        // See: https://nextjs.org/docs/app/api-reference/functions/fetch
-      },
-    }),
-  });
+    return new ApolloClient({
+        cache: new InMemoryCache(),
+        link: new HttpLink({
+            // Use an absolute URL for SSR (relative URLs cannot be used in SSR)
+            uri: "https://your-api.com/graphql",
+            fetchOptions: {
+                // Optional: Next.js-specific fetch options for caching and revalidation
+                // See: https://nextjs.org/docs/app/api-reference/functions/fetch
+            },
+        }),
+    });
 });
 ```
 
@@ -70,12 +74,12 @@ You can override Next.js-specific `fetch` options per query using `context.fetch
 
 ```typescript
 const { data } = await getClient().query({
-  query: GET_USER,
-  context: {
-    fetchOptions: {
-      next: { revalidate: 60 }, // Revalidate every 60 seconds
+    query: GET_USER,
+    context: {
+        fetchOptions: {
+            next: { revalidate: 60 }, // Revalidate every 60 seconds
+        },
     },
-  },
 });
 ```
 
@@ -173,13 +177,13 @@ import { PreloadQuery } from "./ApolloClient";
 import { Suspense } from "react";
 
 export default async function Page() {
-  return (
-    <PreloadQuery query={GET_USER} variables={{ id: "1" }}>
-      <Suspense fallback={<>Loading...</>}>
-        <ClientChild />
-      </Suspense>
-    </PreloadQuery>
-  );
+    return (
+        <PreloadQuery query={GET_USER} variables={{ id: "1" }}>
+            <Suspense fallback={<>Loading...</>}>
+                <ClientChild />
+            </Suspense>
+        </PreloadQuery>
+    );
 }
 ```
 
@@ -191,11 +195,11 @@ export default async function Page() {
 import { useSuspenseQuery } from "@apollo/client/react";
 
 export function ClientChild() {
-  const { data } = useSuspenseQuery(GET_USER, {
-    variables: { id: "1" },
-  });
+    const { data } = useSuspenseQuery(GET_USER, {
+        variables: { id: "1" },
+    });
 
-  return <div>{data.user.name}</div>;
+    return <div>{data.user.name}</div>;
 }
 ```
 
@@ -207,11 +211,11 @@ For advanced use cases, you can use `PreloadQuery` with `useReadQuery` to avoid 
 
 ```tsx
 <PreloadQuery query={GET_USER} variables={{ id: "1" }}>
-  {(queryRef) => (
-    <Suspense fallback={<>Loading...</>}>
-      <ClientChild queryRef={queryRef} />
-    </Suspense>
-  )}
+    {(queryRef) => (
+        <Suspense fallback={<>Loading...</>}>
+            <ClientChild queryRef={queryRef} />
+        </Suspense>
+    )}
 </PreloadQuery>
 ```
 
@@ -223,10 +227,10 @@ In your Client Component:
 import { useQueryRefHandlers, useReadQuery, QueryRef } from "@apollo/client/react";
 
 export function ClientChild({ queryRef }: { queryRef: QueryRef<TQueryData> }) {
-  const { refetch } = useQueryRefHandlers(queryRef);
-  const { data } = useReadQuery(queryRef);
+    const { refetch } = useQueryRefHandlers(queryRef);
+    const { data } = useReadQuery(queryRef);
 
-  return <div>{data.user.name}</div>;
+    return <div>{data.user.name}</div>;
 }
 ```
 
@@ -246,7 +250,7 @@ Use `RemoveMultipartDirectivesLink` to strip `@defer` directives from queries du
 import { RemoveMultipartDirectivesLink } from "@apollo/client-integration-nextjs";
 
 new RemoveMultipartDirectivesLink({
-  stripDefer: true, // Default: true
+    stripDefer: true, // Default: true
 });
 ```
 
@@ -254,10 +258,10 @@ You can exclude specific fragments from stripping by labeling them:
 
 ```graphql
 query myQuery {
-  fastField
-  ... @defer(label: "SsrDontStrip1") {
-    slowField1
-  }
+    fastField
+    ... @defer(label: "SsrDontStrip1") {
+        slowField1
+    }
 }
 ```
 
@@ -269,7 +273,7 @@ Use `AccumulateMultipartResponsesLink` to debounce the initial response:
 import { AccumulateMultipartResponsesLink } from "@apollo/client-integration-nextjs";
 
 new AccumulateMultipartResponsesLink({
-  cutoffDelay: 100, // Wait up to 100ms for incremental data
+    cutoffDelay: 100, // Wait up to 100ms for incremental data
 });
 ```
 
@@ -281,8 +285,8 @@ Combine both strategies with `SSRMultipartLink`:
 import { SSRMultipartLink } from "@apollo/client-integration-nextjs";
 
 new SSRMultipartLink({
-  stripDefer: true,
-  cutoffDelay: 100,
+    stripDefer: true,
+    cutoffDelay: 100,
 });
 ```
 

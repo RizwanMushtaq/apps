@@ -35,12 +35,12 @@ Fragments enable:
 import { gql } from "@apollo/client";
 
 const USER_FRAGMENT = gql`
-  fragment UserFields on User {
-    id
-    name
-    email
-    avatarUrl
-  }
+    fragment UserFields on User {
+        id
+        name
+        email
+        avatarUrl
+    }
 `;
 ```
 
@@ -56,13 +56,13 @@ Include fragments in queries using the spread operator:
 
 ```typescript
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      ...UserFields
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            ...UserFields
+        }
     }
-  }
 
-  ${USER_FRAGMENT}
+    ${USER_FRAGMENT}
 `;
 ```
 
@@ -92,14 +92,14 @@ import { useSuspenseFragment } from "@apollo/client/react";
 // As that generated fragment document is correctly typed, we use that in the code going forward.
 // This fragment will never be consumed in runtime code, so it is wrapped in `if (false)` so the bundler can omit it when bundling.
 if (false) {
-  gql`
-    fragment UserCard_user on User {
-      id
-      name
-      email
-      avatarUrl
-    }
-  `;
+    gql`
+        fragment UserCard_user on User {
+            id
+            name
+            email
+            avatarUrl
+        }
+    `;
 }
 
 // This has been created from above fragment definition by CodeGen and is a correctly typed `TypedDocumentNode`
@@ -107,20 +107,20 @@ import { UserCard_UserFragmentDoc } from "./fragments.generated.ts";
 
 // Component receives the (partially masked) parent object
 export function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  // Creates a subscription to the fragment in the cache
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    fragmentName: "UserCard_user",
-    from: user,
-  });
+    // Creates a subscription to the fragment in the cache
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        fragmentName: "UserCard_user",
+        from: user,
+    });
 
-  return (
-    <div>
-      <img src={data.avatarUrl} alt={data.name} />
-      <h2>{data.name}</h2>
-      <p>{data.email}</p>
-    </div>
-  );
+    return (
+        <div>
+            <img src={data.avatarUrl} alt={data.name} />
+            <h2>{data.name}</h2>
+            <p>{data.email}</p>
+        </div>
+    );
 }
 ```
 
@@ -153,37 +153,37 @@ Parent components compose child fragments to build complete queries:
 import { gql } from "@apollo/client";
 
 if (false) {
-  gql`
-    fragment UserAvatar_user on User {
-      id
-      avatarUrl
-      name
-    }
-  `;
+    gql`
+        fragment UserAvatar_user on User {
+            id
+            avatarUrl
+            name
+        }
+    `;
 }
 
 // Parent component composes child fragments
 if (false) {
-  gql`
-    fragment UserProfile_user on User {
-      id
-      name
-      email
-      bio
-      ...UserAvatar_user
-    }
-  `;
+    gql`
+        fragment UserProfile_user on User {
+            id
+            name
+            email
+            bio
+            ...UserAvatar_user
+        }
+    `;
 }
 
 // Page-level query composes all fragments
 if (false) {
-  gql`
-    query UserProfilePage($id: ID!) {
-      user(id: $id) {
-        ...UserProfile_user
-      }
-    }
-  `;
+    gql`
+        query UserProfilePage($id: ID!) {
+            user(id: $id) {
+                ...UserProfile_user
+            }
+        }
+    `;
 }
 ```
 
@@ -203,13 +203,13 @@ import { FragmentType } from "@apollo/client";
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    fragmentName: "UserCard_user",
-    from: user,
-  });
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        fragmentName: "UserCard_user",
+        from: user,
+    });
 
-  return <div>{data.name}</div>;
+    return <div>{data.name}</div>;
 }
 ```
 
@@ -223,17 +223,17 @@ import { FragmentType } from "@apollo/client";
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  const { data, complete } = useFragment({
-    fragment: UserCard_UserFragmentDoc,
-    fragmentName: "UserCard_user",
-    from: user,
-  });
+    const { data, complete } = useFragment({
+        fragment: UserCard_UserFragmentDoc,
+        fragmentName: "UserCard_user",
+        from: user,
+    });
 
-  if (!complete) {
-    return <div>Loading...</div>;
-  }
+    if (!complete) {
+        return <div>Loading...</div>;
+    }
 
-  return <div>{data.name}</div>;
+    return <div>{data.name}</div>;
 }
 ```
 
@@ -275,8 +275,8 @@ Enable data masking when creating your Apollo Client:
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  dataMasking: true, // Enable data masking
+    cache: new InMemoryCache(),
+    dataMasking: true, // Enable data masking
 });
 ```
 
@@ -294,8 +294,8 @@ Without data masking:
 ```tsx
 // ❌ Without data masking - component can access any data from parent
 function UserCard({ user }: { user: User }) {
-  // Can access any User field, even if not in fragment
-  return <div>{user.privateData}</div>;
+    // Can access any User field, even if not in fragment
+    return <div>{user.privateData}</div>;
 }
 ```
 
@@ -306,16 +306,16 @@ With data masking:
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    from: user,
-  });
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        from: user,
+    });
 
-  // TypeScript error: 'privateData' doesn't exist on fragment type
-  // return <div>{data.privateData}</div>;
+    // TypeScript error: 'privateData' doesn't exist on fragment type
+    // return <div>{data.privateData}</div>;
 
-  // Only fields from the fragment are accessible
-  return <div>{data.name}</div>;
+    // Only fields from the fragment are accessible
+    return <div>{data.name}</div>;
 }
 ```
 
@@ -341,9 +341,9 @@ import { createFragmentRegistry } from "@apollo/client/cache";
 export const fragmentRegistry = createFragmentRegistry();
 
 const client = new ApolloClient({
-  cache: new InMemoryCache({
-    fragments: fragmentRegistry,
-  }),
+    cache: new InMemoryCache({
+        fragments: fragmentRegistry,
+    }),
 });
 ```
 
@@ -356,11 +356,11 @@ import { gql } from "@apollo/client";
 import { fragmentRegistry } from "./apollo/client";
 
 const USER_FRAGMENT = gql`
-  fragment UserFields on User {
-    id
-    name
-    email
-  }
+    fragment UserFields on User {
+        id
+        name
+        email
+    }
 `;
 
 fragmentRegistry.register(USER_FRAGMENT);
@@ -383,11 +383,11 @@ Once registered, fragments can be referenced by name in queries without explicit
 ```tsx
 // Fragment is available by name because it's registered
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      ...UserCard_user
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            ...UserCard_user
+        }
     }
-  }
 `;
 ```
 
@@ -401,17 +401,17 @@ There are three approaches to make child fragments available in parent queries:
 
 3. **Manual interpolation**: Explicitly import and interpolate child fragments into parent fragments:
 
-   ```typescript
-   import { CHILD_FRAGMENT } from "./ChildComponent";
+    ```typescript
+    import { CHILD_FRAGMENT } from "./ChildComponent";
 
-   const PARENT_FRAGMENT = gql`
-     fragment Parent_data on Data {
-       field
-       ...Child_data
-     }
-     ${CHILD_FRAGMENT}
-   `;
-   ```
+    const PARENT_FRAGMENT = gql`
+        fragment Parent_data on Data {
+            field
+            ...Child_data
+        }
+        ${CHILD_FRAGMENT}
+    `;
+    ```
 
 ### Pros and Cons
 
@@ -447,11 +447,11 @@ GraphQL Code Generator produces typed fragment documents:
 ```typescript
 // Generated file: fragments.generated.ts
 export type UserCard_UserFragment = {
-  __typename: "User";
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string;
+    __typename: "User";
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl: string;
 } & { " $fragmentName"?: "UserCard_UserFragment" };
 
 export const UserCard_UserFragmentDoc: TypedDocumentNode<UserCard_UserFragment, never>;
@@ -466,13 +466,13 @@ import { FragmentType } from "@apollo/client";
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    from: user,
-  });
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        from: user,
+    });
 
-  // 'data' is fully typed as UserCard_UserFragment
-  return <div>{data.name}</div>;
+    // 'data' is fully typed as UserCard_UserFragment
+    return <div>{data.name}</div>;
 }
 ```
 
@@ -485,8 +485,8 @@ import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 // Types are inferred from the fragment
 const { data } = useSuspenseFragment({
-  fragment: UserCard_UserFragmentDoc,
-  from: user,
+    fragment: UserCard_UserFragmentDoc,
+    from: user,
 });
 
 // data.name is string
@@ -518,22 +518,22 @@ Sharing fragments between components just because they happen to need the same f
 ```tsx
 // ✅ Good: Each component has its own fragment
 if (false) {
-  gql`
-    fragment UserCard_user on User {
-      id
-      name
-      email
-      avatarUrl
-    }
-  `;
+    gql`
+        fragment UserCard_user on User {
+            id
+            name
+            email
+            avatarUrl
+        }
+    `;
 
-  gql`
-    fragment UserListItem_user on User {
-      id
-      name
-      email
-    }
-  `;
+    gql`
+        fragment UserListItem_user on User {
+            id
+            name
+            email
+        }
+    `;
 }
 
 // If UserCard later needs 'bio', only UserCard_user changes
@@ -543,11 +543,11 @@ if (false) {
 ```tsx
 // ❌ Avoid: Sharing a generic fragment across components
 const COMMON_USER_FIELDS = gql`
-  fragment CommonUserFields on User {
-    id
-    name
-    email
-  }
+    fragment CommonUserFields on User {
+        id
+        name
+        email
+    }
 `;
 
 // UserCard and UserListItem both use CommonUserFields
@@ -564,25 +564,25 @@ Compose all page data requirements into a single query at the page level:
 ```tsx
 // ✅ Good: Single page-level query
 if (false) {
-  gql`
-    query UserProfilePage($id: ID!) {
-      user(id: $id) {
-        ...UserHeader_user
-        ...UserPosts_user
-        ...UserFriends_user
-      }
-    }
-  `;
+    gql`
+        query UserProfilePage($id: ID!) {
+            user(id: $id) {
+                ...UserHeader_user
+                ...UserPosts_user
+                ...UserFriends_user
+            }
+        }
+    `;
 }
 ```
 
 ```tsx
 // ❌ Avoid: Multiple queries in different components
 function UserProfile() {
-  const { data: userData } = useQuery(GET_USER);
-  const { data: postsData } = useQuery(GET_USER_POSTS);
-  const { data: friendsData } = useQuery(GET_USER_FRIENDS);
-  // ...
+    const { data: userData } = useQuery(GET_USER);
+    const { data: postsData } = useQuery(GET_USER_POSTS);
+    const { data: friendsData } = useQuery(GET_USER_FRIENDS);
+    // ...
 }
 ```
 
@@ -597,19 +597,19 @@ import { useSuspenseFragment } from "@apollo/client/react";
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    from: user,
-  });
-  return <div>{data.name}</div>;
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        from: user,
+    });
+    return <div>{data.name}</div>;
 }
 ```
 
 ```tsx
 // ❌ Avoid: Component uses query hook
 function UserCard({ userId }: { userId: string }) {
-  const { data } = useQuery(GET_USER, { variables: { id: userId } });
-  return <div>{data.user.name}</div>;
+    const { data } = useQuery(GET_USER, { variables: { id: userId } });
+    return <div>{data.user.name}</div>;
 }
 ```
 
@@ -620,34 +620,34 @@ Keep fragments minimal and only request fields the component actually uses:
 ```tsx
 // ✅ Good: Only necessary fields
 if (false) {
-  gql`
-    fragment UserListItem_user on User {
-      id
-      name
-    }
-  `;
+    gql`
+        fragment UserListItem_user on User {
+            id
+            name
+        }
+    `;
 }
 ```
 
 ```tsx
 // ❌ Avoid: Requesting unused fields
 if (false) {
-  gql`
-    fragment UserListItem_user on User {
-      id
-      name
-      email
-      bio
-      friends {
-        id
-        name
-      }
-      posts {
-        id
-        title
-      }
-    }
-  `;
+    gql`
+        fragment UserListItem_user on User {
+            id
+            name
+            email
+            bio
+            friends {
+                id
+                name
+            }
+            posts {
+                id
+                title
+            }
+        }
+    `;
 }
 ```
 
@@ -659,16 +659,16 @@ Defer slow fields that aren't immediately visible:
 
 ```tsx
 if (false) {
-  gql`
-    query ProductPage($id: ID!) {
-      product(id: $id) {
-        id
-        name
-        price
-        ...ProductReviews_product @defer
-      }
-    }
-  `;
+    gql`
+        query ProductPage($id: ID!) {
+            product(id: $id) {
+                id
+                name
+                price
+                ...ProductReviews_product @defer
+            }
+        }
+    `;
 }
 ```
 
@@ -680,14 +680,14 @@ Use the `@client` directive for fields resolved locally:
 
 ```tsx
 if (false) {
-  gql`
-    fragment TodoItem_todo on Todo {
-      id
-      text
-      completed
-      isSelected @client
-    }
-  `;
+    gql`
+        fragment TodoItem_todo on Todo {
+            id
+            text
+            completed
+            isSelected @client
+        }
+    `;
 }
 ```
 
@@ -697,8 +697,8 @@ Always enable data masking in new applications:
 
 ```typescript
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  dataMasking: true,
+    cache: new InMemoryCache(),
+    dataMasking: true,
 });
 ```
 
@@ -749,24 +749,24 @@ import { useSuspenseQuery, useSuspenseFragment } from "@apollo/client/react";
 import { UserCard_UserFragmentDoc } from "./fragments.generated";
 
 function ParentComponent() {
-  const { data } = useSuspenseQuery(GET_USER);
+    const { data } = useSuspenseQuery(GET_USER);
 
-  // With Apollo Client data masking:
-  // - data.user only contains unmasked fields
-  // - Parent doesn't re-render when child-specific fields change
+    // With Apollo Client data masking:
+    // - data.user only contains unmasked fields
+    // - Parent doesn't re-render when child-specific fields change
 
-  return <UserCard user={data.user} />;
+    return <UserCard user={data.user} />;
 }
 
 function UserCard({ user }: { user: FragmentType<typeof UserCard_UserFragmentDoc> }) {
-  // Creates a cache subscription specifically for UserCard_user fields
-  const { data } = useSuspenseFragment({
-    fragment: UserCard_UserFragmentDoc,
-    from: user,
-  });
+    // Creates a cache subscription specifically for UserCard_user fields
+    const { data } = useSuspenseFragment({
+        fragment: UserCard_UserFragmentDoc,
+        from: user,
+    });
 
-  // Only this component re-renders when these fields change
-  return <div>{data.name}</div>;
+    // Only this component re-renders when these fields change
+    return <div>{data.name}</div>;
 }
 ```
 

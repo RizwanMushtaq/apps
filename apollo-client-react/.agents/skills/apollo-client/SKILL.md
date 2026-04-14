@@ -1,17 +1,17 @@
 ---
 name: apollo-client
 description: >
-  Guide for building React applications with Apollo Client 4.x. Use this skill when:
-  (1) setting up Apollo Client in a React project,
-  (2) writing GraphQL queries or mutations with hooks,
-  (3) configuring caching or cache policies,
-  (4) managing local state with reactive variables,
-  (5) troubleshooting Apollo Client errors or performance issues.
+    Guide for building React applications with Apollo Client 4.x. Use this skill when:
+    (1) setting up Apollo Client in a React project,
+    (2) writing GraphQL queries or mutations with hooks,
+    (3) configuring caching or cache policies,
+    (4) managing local state with reactive variables,
+    (5) troubleshooting Apollo Client errors or performance issues.
 license: MIT
 compatibility: React 18+, React 19 (Suspense/RSC). Works with Next.js, Vite, CRA, and other React frameworks.
 metadata:
-  author: apollographql
-  version: "1.0.0"
+    author: apollographql
+    version: "1.0.0"
 allowed-tools: Bash(npm:*) Bash(npx:*) Bash(node:*) Read Write Edit Glob Grep
 ---
 
@@ -39,24 +39,24 @@ import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      name
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            id
+            name
+        }
     }
-  }
 `;
 
 function UserProfile({ userId }: { userId: string }) {
-  const { loading, error, data, dataState } = useQuery(GET_USER, {
-    variables: { id: userId },
-  });
+    const { loading, error, data, dataState } = useQuery(GET_USER, {
+        variables: { id: userId },
+    });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
-  // TypeScript: dataState === "ready" provides better type narrowing than just checking data
-  return <div>{data.user.name}</div>;
+    // TypeScript: dataState === "ready" provides better type narrowing than just checking data
+    return <div>{data.user.name}</div>;
 }
 ```
 
@@ -67,22 +67,22 @@ import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client/react";
 
 const CREATE_USER = gql`
-  mutation CreateUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      name
+    mutation CreateUser($input: CreateUserInput!) {
+        createUser(input: $input) {
+            id
+            name
+        }
     }
-  }
 `;
 
 function CreateUserForm() {
-  const [createUser, { loading, error }] = useMutation(CREATE_USER);
+    const [createUser, { loading, error }] = useMutation(CREATE_USER);
 
-  const handleSubmit = async (name: string) => {
-    await createUser({ variables: { input: { name } } });
-  };
+    const handleSubmit = async (name: string) => {
+        await createUser({ variables: { input: { name } } });
+    };
 
-  return <button onClick={() => handleSubmit("John")}>Create User</button>;
+    return <button onClick={() => handleSubmit("John")}>Create User</button>;
 }
 ```
 
@@ -93,19 +93,19 @@ import { Suspense } from "react";
 import { useSuspenseQuery } from "@apollo/client/react";
 
 function UserProfile({ userId }: { userId: string }) {
-  const { data } = useSuspenseQuery(GET_USER, {
-    variables: { id: userId },
-  });
+    const { data } = useSuspenseQuery(GET_USER, {
+        variables: { id: userId },
+    });
 
-  return <div>{data.user.name}</div>;
+    return <div>{data.user.name}</div>;
 }
 
 function App() {
-  return (
-    <Suspense fallback={<p>Loading user...</p>}>
-      <UserProfile userId="1" />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<p>Loading user...</p>}>
+            <UserProfile userId="1" />
+        </Suspense>
+    );
 }
 ```
 

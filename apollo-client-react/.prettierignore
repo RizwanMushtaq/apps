@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+build
+.vite
+*.log
+package-lock.json
+skills-lock.json

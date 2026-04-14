@@ -27,15 +27,15 @@ export const cartItemsVar = makeVar<CartItem[]>([]);
 
 // Complex state
 interface AppState {
-  theme: "light" | "dark";
-  sidebarOpen: boolean;
-  notifications: Notification[];
+    theme: "light" | "dark";
+    sidebarOpen: boolean;
+    notifications: Notification[];
 }
 
 export const appStateVar = makeVar<AppState>({
-  theme: "light",
-  sidebarOpen: true,
-  notifications: [],
+    theme: "light",
+    sidebarOpen: true,
+    notifications: [],
 });
 ```
 
@@ -49,13 +49,13 @@ const isLoggedIn = isLoggedInVar();
 import { useReactiveVar } from "@apollo/client/react";
 
 function AuthButton() {
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
+    const isLoggedIn = useReactiveVar(isLoggedInVar);
 
-  return isLoggedIn ? (
-    <button onClick={() => isLoggedInVar(false)}>Logout</button>
-  ) : (
-    <button onClick={() => isLoggedInVar(true)}>Login</button>
-  );
+    return isLoggedIn ? (
+        <button onClick={() => isLoggedInVar(false)}>Logout</button>
+    ) : (
+        <button onClick={() => isLoggedInVar(true)}>Login</button>
+    );
 }
 ```
 
@@ -70,22 +70,22 @@ cartItemsVar([...cartItemsVar(), newItem]);
 
 // Update object state
 appStateVar({
-  ...appStateVar(),
-  theme: "dark",
+    ...appStateVar(),
+    theme: "dark",
 });
 
 // Helper function pattern
 export function toggleSidebar() {
-  const current = appStateVar();
-  appStateVar({ ...current, sidebarOpen: !current.sidebarOpen });
+    const current = appStateVar();
+    appStateVar({ ...current, sidebarOpen: !current.sidebarOpen });
 }
 
 export function addNotification(notification: Notification) {
-  const current = appStateVar();
-  appStateVar({
-    ...current,
-    notifications: [...current.notifications, notification],
-  });
+    const current = appStateVar();
+    appStateVar({
+        ...current,
+        notifications: [...current.notifications, notification],
+    });
 }
 ```
 
@@ -100,9 +100,9 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { LocalState } from "@apollo/client/local-state";
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  localState: new LocalState({}),
-  // ... other options
+    cache: new InMemoryCache(),
+    localState: new LocalState({}),
+    // ... other options
 });
 ```
 
@@ -112,29 +112,29 @@ const client = new ApolloClient({
 
 ```tsx
 const GET_USER_WITH_LOCAL = gql`
-  query GetUserWithLocal($id: ID!) {
-    user(id: $id) {
-      id
-      name
-      email
-      # Local-only fields
-      isSelected @client
-      displayName @client
+    query GetUserWithLocal($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            email
+            # Local-only fields
+            isSelected @client
+            displayName @client
+        }
     }
-  }
 `;
 
 function UserCard({ userId }: { userId: string }) {
-  const { data } = useQuery(GET_USER_WITH_LOCAL, {
-    variables: { id: userId },
-  });
+    const { data } = useQuery(GET_USER_WITH_LOCAL, {
+        variables: { id: userId },
+    });
 
-  return (
-    <div className={data?.user.isSelected ? "selected" : ""}>
-      <h2>{data?.user.displayName}</h2>
-      <p>{data?.user.email}</p>
-    </div>
-  );
+    return (
+        <div className={data?.user.isSelected ? "selected" : ""}>
+            <h2>{data?.user.displayName}</h2>
+            <p>{data?.user.email}</p>
+        </div>
+    );
 }
 ```
 
@@ -144,28 +144,28 @@ Local field `read` functions are defined in entity-level type policies. You can 
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    User: {
-      fields: {
-        // Simple local field from reactive variable
-        isSelected: {
-          read(_, { readField }) {
-            const id = readField("id");
-            return selectedUsersVar().includes(id);
-          },
-        },
+    typePolicies: {
+        User: {
+            fields: {
+                // Simple local field from reactive variable
+                isSelected: {
+                    read(_, { readField }) {
+                        const id = readField("id");
+                        return selectedUsersVar().includes(id);
+                    },
+                },
 
-        // Computed local field (derived value)
-        displayName: {
-          read(_, { readField }) {
-            const name = readField("name");
-            const email = readField("email");
-            return name || email?.split("@")[0] || "Anonymous";
-          },
+                // Computed local field (derived value)
+                displayName: {
+                    read(_, { readField }) {
+                        const name = readField("name");
+                        const email = readField("email");
+                        return name || email?.split("@")[0] || "Anonymous";
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -179,44 +179,44 @@ Query-level local fields can be defined using `LocalState` resolvers. **Note**: 
 import { LocalState } from "@apollo/client/local-state";
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  localState: new LocalState({
-    resolvers: {
-      Query: {
-        // Read from localStorage
-        theme: () => {
-          if (typeof window !== "undefined") {
-            return localStorage.getItem("theme") || "light";
-          }
-          return "light";
-        },
+    cache: new InMemoryCache(),
+    localState: new LocalState({
+        resolvers: {
+            Query: {
+                // Read from localStorage
+                theme: () => {
+                    if (typeof window !== "undefined") {
+                        return localStorage.getItem("theme") || "light";
+                    }
+                    return "light";
+                },
 
-        // Read from cache
-        currentUser: (_, __, { cache }) => {
-          const userId = localStorage.getItem("currentUserId");
-          if (!userId) return null;
-          return cache.readFragment({
-            id: cache.identify({ __typename: "User", id: userId }),
-            fragment: gql`
-              fragment CurrentUser on User {
-                id
-                name
-                email
-              }
-            `,
-          });
-        },
+                // Read from cache
+                currentUser: (_, __, { cache }) => {
+                    const userId = localStorage.getItem("currentUserId");
+                    if (!userId) return null;
+                    return cache.readFragment({
+                        id: cache.identify({ __typename: "User", id: userId }),
+                        fragment: gql`
+                            fragment CurrentUser on User {
+                                id
+                                name
+                                email
+                            }
+                        `,
+                    });
+                },
 
-        // Compute value
-        isOnline: () => {
-          if (typeof navigator !== "undefined") {
-            return navigator.onLine;
-          }
-          return true;
+                // Compute value
+                isOnline: () => {
+                    if (typeof navigator !== "undefined") {
+                        return navigator.onLine;
+                    }
+                    return true;
+                },
+            },
         },
-      },
-    },
-  }),
+    }),
 });
 ```
 
@@ -224,24 +224,24 @@ const client = new ApolloClient({
 
 ```tsx
 const GET_AUTH_STATE = gql`
-  query GetAuthState {
-    isLoggedIn @client
-    currentUser @client {
-      id
-      name
-      email
+    query GetAuthState {
+        isLoggedIn @client
+        currentUser @client {
+            id
+            name
+            email
+        }
     }
-  }
 `;
 
 function AuthStatus() {
-  const { data } = useQuery(GET_AUTH_STATE);
+    const { data } = useQuery(GET_AUTH_STATE);
 
-  if (!data?.isLoggedIn) {
-    return <LoginButton />;
-  }
+    if (!data?.isLoggedIn) {
+        return <LoginButton />;
+    }
 
-  return <UserMenu user={data.currentUser} />;
+    return <UserMenu user={data.currentUser} />;
 }
 ```
 
@@ -251,39 +251,39 @@ function AuthStatus() {
 
 ```tsx
 const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      name
-      price
-      # Local fields
-      quantity @client
-      isInCart @client
+    query GetProducts {
+        products {
+            id
+            name
+            price
+            # Local fields
+            quantity @client
+            isInCart @client
+        }
     }
-  }
 `;
 
 const cache = new InMemoryCache({
-  typePolicies: {
-    Product: {
-      fields: {
-        quantity: {
-          read(_, { readField }) {
-            const id = readField("id");
-            const cartItem = cartItemsVar().find((item) => item.productId === id);
-            return cartItem?.quantity ?? 0;
-          },
-        },
+    typePolicies: {
+        Product: {
+            fields: {
+                quantity: {
+                    read(_, { readField }) {
+                        const id = readField("id");
+                        const cartItem = cartItemsVar().find((item) => item.productId === id);
+                        return cartItem?.quantity ?? 0;
+                    },
+                },
 
-        isInCart: {
-          read(_, { readField }) {
-            const id = readField("id");
-            return cartItemsVar().some((item) => item.productId === id);
-          },
+                isInCart: {
+                    read(_, { readField }) {
+                        const id = readField("id");
+                        return cartItemsVar().some((item) => item.productId === id);
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -293,39 +293,41 @@ const cache = new InMemoryCache({
 import { LocalState } from "@apollo/client/local-state";
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  localState: new LocalState({
-    resolvers: {
-      Mutation: {
-        addToCart: (_, { productId, quantity }, { cache }) => {
-          // Read current cart from cache
-          const { cart } = cache.readQuery({ query: GET_CART }) || { cart: [] };
+    cache: new InMemoryCache(),
+    localState: new LocalState({
+        resolvers: {
+            Mutation: {
+                addToCart: (_, { productId, quantity }, { cache }) => {
+                    // Read current cart from cache
+                    const { cart } = cache.readQuery({ query: GET_CART }) || { cart: [] };
 
-          const existing = cart.find((item) => item.productId === productId);
+                    const existing = cart.find((item) => item.productId === productId);
 
-          const updatedCart = existing
-            ? cart.map((item) =>
-                item.productId === productId ? { ...item, quantity: item.quantity + quantity } : item,
-              )
-            : [...cart, { productId, quantity, __typename: "CartItem" }];
+                    const updatedCart = existing
+                        ? cart.map((item) =>
+                              item.productId === productId
+                                  ? { ...item, quantity: item.quantity + quantity }
+                                  : item,
+                          )
+                        : [...cart, { productId, quantity, __typename: "CartItem" }];
 
-          // Write updated cart back to cache
-          cache.writeQuery({
-            query: GET_CART,
-            data: { cart: updatedCart },
-          });
+                    // Write updated cart back to cache
+                    cache.writeQuery({
+                        query: GET_CART,
+                        data: { cart: updatedCart },
+                    });
 
-          return true;
+                    return true;
+                },
+            },
         },
-      },
-    },
-  }),
+    }),
 });
 
 const ADD_TO_CART = gql`
-  mutation AddToCart($productId: ID!, $quantity: Int!) {
-    addToCart(productId: $productId, quantity: $quantity) @client
-  }
+    mutation AddToCart($productId: ID!, $quantity: Int!) {
+        addToCart(productId: $productId, quantity: $quantity) @client
+    }
 `;
 ```
 
@@ -334,26 +336,28 @@ const ADD_TO_CART = gql`
 ```typescript
 // Create a helper function to permanently subscribe to reactive variable changes, without creating memory leaks
 function subscribeToVariable<T>(weakRef: WeakRef<ReactiveVar<T>>, listener: ReactiveListener<T>) {
-  weakRef.deref()?.onNextChange((value) => {
-    listener(value);
-    subscribeToVariable(weakRef, listener);
-  });
+    weakRef.deref()?.onNextChange((value) => {
+        listener(value);
+        subscribeToVariable(weakRef, listener);
+    });
 }
 
 // Create reactive variable with persistence
 const persistentCartVar = makeVar<CartItem[]>(
-  typeof window !== "undefined" && localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")!) : [],
+    typeof window !== "undefined" && localStorage.getItem("cart")
+        ? JSON.parse(localStorage.getItem("cart")!)
+        : [],
 );
 
 // Save to localStorage when reactive variable changes
 subscribeToVariable(new WeakRef(persistentCartVar), (items) => {
-  try {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("cart", JSON.stringify(items));
+    try {
+        if (typeof window !== "undefined") {
+            localStorage.setItem("cart", JSON.stringify(items));
+        }
+    } catch (error) {
+        console.error("Failed to persist cart:", error);
     }
-  } catch (error) {
-    console.error("Failed to persist cart:", error);
-  }
 });
 ```
 
@@ -367,9 +371,13 @@ The `useReactiveVar` hook subscribes a component to reactive variable updates.
 import { useReactiveVar } from "@apollo/client/react";
 
 function ThemeToggle() {
-  const theme = useReactiveVar(themeVar);
+    const theme = useReactiveVar(themeVar);
 
-  return <button onClick={() => themeVar(theme === "light" ? "dark" : "light")}>Current: {theme}</button>;
+    return (
+        <button onClick={() => themeVar(theme === "light" ? "dark" : "light")}>
+            Current: {theme}
+        </button>
+    );
 }
 ```
 
@@ -377,18 +385,18 @@ function ThemeToggle() {
 
 ```tsx
 function CartSummary() {
-  const cartItems = useReactiveVar(cartItemsVar);
+    const cartItems = useReactiveVar(cartItemsVar);
 
-  // Derived values are computed on each render
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    // Derived values are computed on each render
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  return (
-    <div>
-      <p>Items: {totalItems}</p>
-      <p>Total: ${totalPrice.toFixed(2)}</p>
-    </div>
-  );
+    return (
+        <div>
+            <p>Items: {totalItems}</p>
+            <p>Total: ${totalPrice.toFixed(2)}</p>
+        </div>
+    );
 }
 ```
 
@@ -396,17 +404,17 @@ function CartSummary() {
 
 ```tsx
 function AppLayout() {
-  const theme = useReactiveVar(themeVar);
-  const sidebarOpen = useReactiveVar(sidebarOpenVar);
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
+    const theme = useReactiveVar(themeVar);
+    const sidebarOpen = useReactiveVar(sidebarOpenVar);
+    const isLoggedIn = useReactiveVar(isLoggedInVar);
 
-  return (
-    <div className={`app ${theme}`}>
-      {isLoggedIn && sidebarOpen && <Sidebar />}
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  );
+    return (
+        <div className={`app ${theme}`}>
+            {isLoggedIn && sidebarOpen && <Sidebar />}
+            <main>
+                <Outlet />
+            </main>
+        </div>
+    );
 }
 ```

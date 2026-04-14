@@ -18,26 +18,26 @@
 import { InMemoryCache } from "@apollo/client";
 
 const cache = new InMemoryCache({
-  // Custom type policies
-  typePolicies: {
-    Query: {
-      fields: {
-        // Query-level field policies
-      },
+    // Custom type policies
+    typePolicies: {
+        Query: {
+            fields: {
+                // Query-level field policies
+            },
+        },
+        User: {
+            keyFields: ["id"],
+            fields: {
+                // User-level field policies
+            },
+        },
     },
-    User: {
-      keyFields: ["id"],
-      fields: {
-        // User-level field policies
-      },
-    },
-  },
 
-  // Custom type name handling (rare)
-  possibleTypes: {
-    Character: ["Human", "Droid"],
-    Node: ["User", "Post", "Comment"],
-  },
+    // Custom type name handling (rare)
+    possibleTypes: {
+        Character: ["Human", "Droid"],
+        Node: ["User", "Post", "Comment"],
+    },
 });
 ```
 
@@ -45,23 +45,23 @@ const cache = new InMemoryCache({
 
 ```typescript
 new InMemoryCache({
-  // Define how types are identified in cache
-  typePolicies: {
-    /* ... */
-  },
+    // Define how types are identified in cache
+    typePolicies: {
+        /* ... */
+    },
 
-  // Interface/union type mappings between supertypes and their subtypes
-  possibleTypes: {
-    /* ... */
-  },
+    // Interface/union type mappings between supertypes and their subtypes
+    possibleTypes: {
+        /* ... */
+    },
 
-  // Custom function to generate cache IDs (rare)
-  dataIdFromObject: (object) => {
-    if (object.__typename === "Book") {
-      return `Book:${object.isbn}`;
-    }
-    return defaultDataIdFromObject(object);
-  },
+    // Custom function to generate cache IDs (rare)
+    dataIdFromObject: (object) => {
+        if (object.__typename === "Book") {
+            return `Book:${object.isbn}`;
+        }
+        return defaultDataIdFromObject(object);
+    },
 });
 ```
 
@@ -74,14 +74,14 @@ Apollo Client normalizes data by splitting query results into individual objects
 ```graphql
 # Query
 query GetPost {
-  post(id: "1") {
-    id
-    title
-    author {
-      id
-      name
+    post(id: "1") {
+        id
+        title
+        author {
+            id
+            name
+        }
     }
-  }
 }
 ```
 
@@ -119,35 +119,35 @@ Customize how objects are identified in the cache.
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    // Use ISBN instead of id for books
-    Book: {
-      keyFields: ["isbn"],
-    },
+    typePolicies: {
+        // Use ISBN instead of id for books
+        Book: {
+            keyFields: ["isbn"],
+        },
 
-    // Composite key
-    UserSession: {
-      keyFields: ["userId", "deviceId"],
-    },
+        // Composite key
+        UserSession: {
+            keyFields: ["userId", "deviceId"],
+        },
 
-    // Nested key
-    Review: {
-      keyFields: ["book", ["isbn"], "reviewer", ["id"]],
-    },
+        // Nested key
+        Review: {
+            keyFields: ["book", ["isbn"], "reviewer", ["id"]],
+        },
 
-    // No key fields (singleton, only one object in cache per type)
-    AppSettings: {
-      keyFields: [],
-    },
+        // No key fields (singleton, only one object in cache per type)
+        AppSettings: {
+            keyFields: [],
+        },
 
-    // Disable normalization (objects of this type will be stored with their
-    // parent entity. The same object might end up multiple times in the cache
-    // and run out of sync. Use with caution, only if this object really relates
-    // to a property of their parent entity and cannot exist on its own.)
-    Address: {
-      keyFields: false,
+        // Disable normalization (objects of this type will be stored with their
+        // parent entity. The same object might end up multiple times in the cache
+        // and run out of sync. Use with caution, only if this object really relates
+        // to a property of their parent entity and cannot exist on its own.)
+        Address: {
+            keyFields: false,
+        },
     },
-  },
 });
 ```
 
@@ -157,24 +157,24 @@ Control how incoming data merges with existing data.
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    User: {
-      fields: {
-        // Deep merge profile object
-        profile: {
-          merge: true, // Shorthand for deep merge
-        },
+    typePolicies: {
+        User: {
+            fields: {
+                // Deep merge profile object
+                profile: {
+                    merge: true, // Shorthand for deep merge
+                },
 
-        // Custom merge logic
-        notifications: {
-          merge(existing = [], incoming, { mergeObjects }) {
-            // Prepend new notifications
-            return [...incoming, ...existing];
-          },
+                // Custom merge logic
+                notifications: {
+                    merge(existing = [], incoming, { mergeObjects }) {
+                        // Prepend new notifications
+                        return [...incoming, ...existing];
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -186,34 +186,34 @@ Transform cached data when reading.
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    User: {
-      fields: {
-        // Computed field
-        fullName: {
-          read(_, { readField }) {
-            const firstName = readField("firstName");
-            const lastName = readField("lastName");
-            return `${firstName} ${lastName}`;
-          },
-        },
+    typePolicies: {
+        User: {
+            fields: {
+                // Computed field
+                fullName: {
+                    read(_, { readField }) {
+                        const firstName = readField("firstName");
+                        const lastName = readField("lastName");
+                        return `${firstName} ${lastName}`;
+                    },
+                },
 
-        // Transform existing field
-        birthDate: {
-          read(existing) {
-            return existing ? new Date(existing) : null;
-          },
-        },
+                // Transform existing field
+                birthDate: {
+                    read(existing) {
+                        return existing ? new Date(existing) : null;
+                    },
+                },
 
-        // Default value
-        role: {
-          read(existing = "USER") {
-            return existing;
-          },
+                // Default value
+                role: {
+                    read(existing = "USER") {
+                        return existing;
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -223,40 +223,40 @@ Control how incoming data is stored.
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    User: {
-      fields: {
-        // Accumulate items instead of replacing
-        friends: {
-          merge(existing = [], incoming) {
-            return [...existing, ...incoming];
-          },
+    typePolicies: {
+        User: {
+            fields: {
+                // Accumulate items instead of replacing
+                friends: {
+                    merge(existing = [], incoming) {
+                        return [...existing, ...incoming];
+                    },
+                },
+
+                // Merge objects deeply
+                settings: {
+                    merge(existing, incoming, { mergeObjects }) {
+                        return mergeObjects(existing, incoming);
+                    },
+                },
+            },
         },
 
-        // Merge objects deeply
-        settings: {
-          merge(existing, incoming, { mergeObjects }) {
-            return mergeObjects(existing, incoming);
-          },
+        Query: {
+            fields: {
+                // Merge paginated results
+                posts: {
+                    keyArgs: ["category"], // Only category affects cache key
+                    merge(existing = { items: [] }, incoming) {
+                        return {
+                            ...incoming,
+                            items: [...existing.items, ...incoming.items],
+                        };
+                    },
+                },
+            },
         },
-      },
     },
-
-    Query: {
-      fields: {
-        // Merge paginated results
-        posts: {
-          keyArgs: ["category"], // Only category affects cache key
-          merge(existing = { items: [] }, incoming) {
-            return {
-              ...incoming,
-              items: [...existing.items, ...incoming.items],
-            };
-          },
-        },
-      },
-    },
-  },
 });
 ```
 
@@ -266,28 +266,28 @@ Control which arguments affect cache storage.
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        // Different cache entry per userId only
-        // (limit, offset don't create new entries)
-        userPosts: {
-          keyArgs: ["userId"],
-        },
+    typePolicies: {
+        Query: {
+            fields: {
+                // Different cache entry per userId only
+                // (limit, offset don't create new entries)
+                userPosts: {
+                    keyArgs: ["userId"],
+                },
 
-        // No arguments affect cache key
-        // (useful for pagination)
-        feed: {
-          keyArgs: false,
-        },
+                // No arguments affect cache key
+                // (useful for pagination)
+                feed: {
+                    keyArgs: false,
+                },
 
-        // Nested argument
-        search: {
-          keyArgs: ["filter", ["category", "status"]],
+                // Nested argument
+                search: {
+                    keyArgs: ["filter", ["category", "status"]],
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -299,16 +299,16 @@ const cache = new InMemoryCache({
 import { offsetLimitPagination } from "@apollo/client/utilities";
 
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        posts: offsetLimitPagination(),
+    typePolicies: {
+        Query: {
+            fields: {
+                posts: offsetLimitPagination(),
 
-        // With key arguments
-        userPosts: offsetLimitPagination(["userId"]),
-      },
+                // With key arguments
+                userPosts: offsetLimitPagination(["userId"]),
+            },
+        },
     },
-  },
 });
 ```
 
@@ -318,16 +318,16 @@ const cache = new InMemoryCache({
 import { relayStylePagination } from "@apollo/client/utilities";
 
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        posts: relayStylePagination(),
+    typePolicies: {
+        Query: {
+            fields: {
+                posts: relayStylePagination(),
 
-        // With key arguments
-        userPosts: relayStylePagination(["userId"]),
-      },
+                // With key arguments
+                userPosts: relayStylePagination(["userId"]),
+            },
+        },
     },
-  },
 });
 ```
 
@@ -335,32 +335,32 @@ const cache = new InMemoryCache({
 
 ```typescript
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        feed: {
-          keyArgs: false,
+    typePolicies: {
+        Query: {
+            fields: {
+                feed: {
+                    keyArgs: false,
 
-          merge(existing, incoming, { args }) {
-            const merged = existing ? existing.slice(0) : [];
-            const offset = args?.offset ?? 0;
+                    merge(existing, incoming, { args }) {
+                        const merged = existing ? existing.slice(0) : [];
+                        const offset = args?.offset ?? 0;
 
-            for (let i = 0; i < incoming.length; i++) {
-              merged[offset + i] = incoming[i];
-            }
+                        for (let i = 0; i < incoming.length; i++) {
+                            merged[offset + i] = incoming[i];
+                        }
 
-            return merged;
-          },
+                        return merged;
+                    },
 
-          read(existing, { args }) {
-            const offset = args?.offset ?? 0;
-            const limit = args?.limit ?? existing?.length ?? 0;
-            return existing?.slice(offset, offset + limit);
-          },
+                    read(existing, { args }) {
+                        const offset = args?.offset ?? 0;
+                        const limit = args?.limit ?? existing?.length ?? 0;
+                        return existing?.slice(offset, offset + limit);
+                    },
+                },
+            },
         },
-      },
     },
-  },
 });
 ```
 
@@ -368,29 +368,29 @@ const cache = new InMemoryCache({
 
 ```tsx
 function PostList() {
-  const { data, fetchMore, loading } = useQuery(GET_POSTS, {
-    variables: { offset: 0, limit: 10 },
-  });
-
-  const loadMore = () => {
-    fetchMore({
-      variables: {
-        offset: data.posts.length,
-      },
-      // With proper type policies, no updateQuery needed
+    const { data, fetchMore, loading } = useQuery(GET_POSTS, {
+        variables: { offset: 0, limit: 10 },
     });
-  };
 
-  return (
-    <div>
-      {data?.posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
-      <button onClick={loadMore} disabled={loading}>
-        Load More
-      </button>
-    </div>
-  );
+    const loadMore = () => {
+        fetchMore({
+            variables: {
+                offset: data.posts.length,
+            },
+            // With proper type policies, no updateQuery needed
+        });
+    };
+
+    return (
+        <div>
+            {data?.posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+            ))}
+            <button onClick={loadMore} disabled={loading}>
+                Load More
+            </button>
+        </div>
+    );
 }
 ```
 
@@ -401,13 +401,13 @@ function PostList() {
 ```typescript
 // Read data from cache
 const data = cache.readQuery({
-  query: GET_TODOS,
+    query: GET_TODOS,
 });
 
 // With variables
 const userData = cache.readQuery({
-  query: GET_USER,
-  variables: { id: "1" },
+    query: GET_USER,
+    variables: { id: "1" },
 });
 ```
 
@@ -416,19 +416,19 @@ const userData = cache.readQuery({
 ```typescript
 // Write data to cache
 cache.writeQuery({
-  query: GET_TODOS,
-  data: {
-    todos: [{ __typename: "Todo", id: "1", text: "Buy milk", completed: false }],
-  },
+    query: GET_TODOS,
+    data: {
+        todos: [{ __typename: "Todo", id: "1", text: "Buy milk", completed: false }],
+    },
 });
 
 // With variables
 cache.writeQuery({
-  query: GET_USER,
-  variables: { id: "1" },
-  data: {
-    user: { __typename: "User", id: "1", name: "John" },
-  },
+    query: GET_USER,
+    variables: { id: "1" },
+    data: {
+        user: { __typename: "User", id: "1", name: "John" },
+    },
 });
 ```
 
@@ -437,52 +437,52 @@ cache.writeQuery({
 ```typescript
 // Read a specific object - use cache.identify for safety
 const user = cache.readFragment({
-  id: cache.identify({ __typename: "User", id: "1" }),
-  fragment: gql`
-    fragment UserFragment on User {
-      id
-      name
-      email
-    }
-  `,
+    id: cache.identify({ __typename: "User", id: "1" }),
+    fragment: gql`
+        fragment UserFragment on User {
+            id
+            name
+            email
+        }
+    `,
 });
 
 // Apollo Client 4.1+: Use 'from' parameter (recommended)
 const user = cache.readFragment({
-  from: { __typename: "User", id: "1" },
-  fragment: gql`
-    fragment UserFragment on User {
-      id
-      name
-      email
-    }
-  `,
+    from: { __typename: "User", id: "1" },
+    fragment: gql`
+        fragment UserFragment on User {
+            id
+            name
+            email
+        }
+    `,
 });
 
 // Update a specific object
 cache.writeFragment({
-  id: cache.identify({ __typename: "User", id: "1" }),
-  fragment: gql`
-    fragment UpdateUser on User {
-      name
-    }
-  `,
-  data: {
-    name: "Jane",
-  },
+    id: cache.identify({ __typename: "User", id: "1" }),
+    fragment: gql`
+        fragment UpdateUser on User {
+            name
+        }
+    `,
+    data: {
+        name: "Jane",
+    },
 });
 
 // Apollo Client 4.1+: Use 'from' parameter (recommended)
 cache.writeFragment({
-  from: { __typename: "User", id: "1" },
-  fragment: gql`
-    fragment UpdateUser on User {
-      name
-    }
-  `,
-  data: {
-    name: "Jane",
-  },
+    from: { __typename: "User", id: "1" },
+    fragment: gql`
+        fragment UpdateUser on User {
+            name
+        }
+    `,
+    data: {
+        name: "Jane",
+    },
 });
 ```
 
@@ -491,20 +491,23 @@ cache.writeFragment({
 ```typescript
 // Modify fields directly
 cache.modify({
-  id: cache.identify(user),
-  fields: {
-    // Set new value
-    name: () => "New Name",
+    id: cache.identify(user),
+    fields: {
+        // Set new value
+        name: () => "New Name",
 
-    // Transform existing value
-    postCount: (existing) => existing + 1,
+        // Transform existing value
+        postCount: (existing) => existing + 1,
 
-    // Delete field
-    temporaryField: (_, { DELETE }) => DELETE,
+        // Delete field
+        temporaryField: (_, { DELETE }) => DELETE,
 
-    // Add to array
-    friends: (existing, { toReference }) => [...existing, toReference({ __typename: "User", id: "2" })],
-  },
+        // Add to array
+        friends: (existing, { toReference }) => [
+            ...existing,
+            toReference({ __typename: "User", id: "2" }),
+        ],
+    },
 });
 ```
 

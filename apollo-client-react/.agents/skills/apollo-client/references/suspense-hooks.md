@@ -29,20 +29,20 @@ import { useSuspenseQuery } from "@apollo/client/react";
 import { GET_DOG } from "./queries.generated";
 
 function App() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Dog id="3" />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Dog id="3" />
+        </Suspense>
+    );
 }
 
 function Dog({ id }: { id: string }) {
-  const { data } = useSuspenseQuery(GET_DOG, {
-    variables: { id },
-  });
+    const { data } = useSuspenseQuery(GET_DOG, {
+        variables: { id },
+    });
 
-  // data is always defined when this component renders
-  return <div>Name: {data.dog.name}</div>;
+    // data is always defined when this component renders
+    return <div>Name: {data.dog.name}</div>;
 }
 ```
 
@@ -50,15 +50,15 @@ function Dog({ id }: { id: string }) {
 
 ```typescript
 const {
-  data, // Query result data
-  dataState, // With default options: "complete" | "streaming"
-  // With returnPartialData: also "partial"
-  // With errorPolicy "all" or "ignore": also "empty"
-  error, // ApolloError (only when errorPolicy is "all" or "ignore")
-  networkStatus, // NetworkStatus.ready, NetworkStatus.loading, etc.
-  client, // Apollo Client instance
-  refetch, // Function to re-execute query
-  fetchMore, // Function for pagination
+    data, // Query result data
+    dataState, // With default options: "complete" | "streaming"
+    // With returnPartialData: also "partial"
+    // With errorPolicy "all" or "ignore": also "empty"
+    error, // ApolloError (only when errorPolicy is "all" or "ignore")
+    networkStatus, // NetworkStatus.ready, NetworkStatus.loading, etc.
+    client, // Apollo Client instance
+    refetch, // Function to re-execute query
+    fetchMore, // Function for pagination
 } = useSuspenseQuery(QUERY, options);
 ```
 
@@ -78,36 +78,36 @@ import { useState } from "react";
 import { GET_DOGS } from "./queries.generated";
 
 function DogSelector() {
-  const { data } = useSuspenseQuery(GET_DOGS);
-  const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
+    const { data } = useSuspenseQuery(GET_DOGS);
+    const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
 
-  return (
-    <>
-      <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
-        {data.dogs.map((dog) => (
-          <option key={dog.id} value={dog.id}>
-            {dog.name}
-          </option>
-        ))}
-      </select>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Dog id={selectedDog} />
-      </Suspense>
-    </>
-  );
+    return (
+        <>
+            <select value={selectedDog} onChange={(e) => setSelectedDog(e.target.value)}>
+                {data.dogs.map((dog) => (
+                    <option key={dog.id} value={dog.id}>
+                        {dog.name}
+                    </option>
+                ))}
+            </select>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Dog id={selectedDog} />
+            </Suspense>
+        </>
+    );
 }
 
 function Dog({ id }: { id: string }) {
-  const { data } = useSuspenseQuery(GET_DOG, {
-    variables: { id },
-  });
+    const { data } = useSuspenseQuery(GET_DOG, {
+        variables: { id },
+    });
 
-  return (
-    <>
-      <div>Name: {data.dog.name}</div>
-      <div>Breed: {data.dog.breed}</div>
-    </>
-  );
+    return (
+        <>
+            <div>Name: {data.dog.name}</div>
+            <div>Breed: {data.dog.breed}</div>
+        </>
+    );
 }
 ```
 
@@ -117,17 +117,17 @@ Use `returnPartialData` to render immediately with partial cache data instead of
 
 ```tsx
 function Dog({ id }: { id: string }) {
-  const { data } = useSuspenseQuery(GET_DOG, {
-    variables: { id },
-    returnPartialData: true,
-  });
+    const { data } = useSuspenseQuery(GET_DOG, {
+        variables: { id },
+        returnPartialData: true,
+    });
 
-  return (
-    <>
-      <div>Name: {data.dog?.name ?? "Unknown"}</div>
-      {data.dog?.breed && <div>Breed: {data.dog.breed}</div>}
-    </>
-  );
+    return (
+        <>
+            <div>Name: {data.dog?.name ?? "Unknown"}</div>
+            {data.dog?.breed && <div>Breed: {data.dog.breed}</div>}
+        </>
+    );
 }
 ```
 
@@ -142,23 +142,23 @@ import { Suspense } from "react";
 import { useBackgroundQuery, useReadQuery } from "@apollo/client/react";
 
 function Parent() {
-  // Start fetching immediately
-  const [queryRef] = useBackgroundQuery(GET_DOG, {
-    variables: { id: "3" },
-  });
+    // Start fetching immediately
+    const [queryRef] = useBackgroundQuery(GET_DOG, {
+        variables: { id: "3" },
+    });
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Child queryRef={queryRef} />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Child queryRef={queryRef} />
+        </Suspense>
+    );
 }
 
 function Child({ queryRef }: { queryRef: QueryRef<DogData> }) {
-  // Read the query result
-  const { data } = useReadQuery(queryRef);
+    // Read the query result
+    const { data } = useReadQuery(queryRef);
 
-  return <div>Name: {data.dog.name}</div>;
+    return <div>Name: {data.dog.name}</div>;
 }
 ```
 
@@ -174,8 +174,8 @@ function Child({ queryRef }: { queryRef: QueryRef<DogData> }) {
 
 ```typescript
 const [
-  queryRef, // QueryRef to pass to useReadQuery
-  { refetch, fetchMore, subscribeToMore }, // Helper functions
+    queryRef, // QueryRef to pass to useReadQuery
+    { refetch, fetchMore, subscribeToMore }, // Helper functions
 ] = useBackgroundQuery(QUERY, options);
 ```
 
@@ -183,10 +183,10 @@ const [
 
 ```typescript
 const {
-  data, // Query result data (always defined)
-  dataState, // "complete" | "streaming" | "partial" | "empty"
-  error, // ApolloError (if errorPolicy allows)
-  networkStatus, // Detailed network state (1-8)
+    data, // Query result data (always defined)
+    dataState, // "complete" | "streaming" | "partial" | "empty"
+    error, // ApolloError (if errorPolicy allows)
+    networkStatus, // Detailed network state (1-8)
 } = useReadQuery(queryRef);
 ```
 
@@ -202,20 +202,24 @@ import { useLoadableQuery, useReadQuery } from "@apollo/client/react";
 import { GET_GREETING } from "./queries.generated";
 
 function App() {
-  const [loadGreeting, queryRef] = useLoadableQuery(GET_GREETING);
+    const [loadGreeting, queryRef] = useLoadableQuery(GET_GREETING);
 
-  return (
-    <>
-      <button onClick={() => loadGreeting({ variables: { language: "english" } })}>Load Greeting</button>
-      <Suspense fallback={<div>Loading...</div>}>{queryRef && <Greeting queryRef={queryRef} />}</Suspense>
-    </>
-  );
+    return (
+        <>
+            <button onClick={() => loadGreeting({ variables: { language: "english" } })}>
+                Load Greeting
+            </button>
+            <Suspense fallback={<div>Loading...</div>}>
+                {queryRef && <Greeting queryRef={queryRef} />}
+            </Suspense>
+        </>
+    );
 }
 
 function Greeting({ queryRef }: { queryRef: QueryRef<GreetingData> }) {
-  const { data } = useReadQuery(queryRef);
+    const { data } = useReadQuery(queryRef);
 
-  return <div>{data.greeting.message}</div>;
+    return <div>{data.greeting.message}</div>;
 }
 ```
 
@@ -223,9 +227,9 @@ function Greeting({ queryRef }: { queryRef: QueryRef<GreetingData> }) {
 
 ```typescript
 const [
-  loadQuery, // Function to load the query
-  queryRef, // QueryRef (null until loadQuery is called)
-  { refetch, fetchMore, subscribeToMore, reset }, // Helper functions
+    loadQuery, // Function to load the query
+    queryRef, // QueryRef (null until loadQuery is called)
+    { refetch, fetchMore, subscribeToMore, reset }, // Helper functions
 ] = useLoadableQuery(QUERY, options);
 ```
 
@@ -246,8 +250,8 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { createQueryPreloader } from "@apollo/client/react";
 
 const client = new ApolloClient({
-  uri: "https://your-graphql-endpoint.com/graphql",
-  cache: new InMemoryCache(),
+    uri: "https://your-graphql-endpoint.com/graphql",
+    cache: new InMemoryCache(),
 });
 
 // Create a preload function
@@ -266,32 +270,32 @@ import { GET_DOG } from "./queries.generated";
 
 // React Router loader function
 export async function loader({ params }: { params: { id: string } }) {
-  return preloadQuery({
-    query: GET_DOG,
-    variables: { id: params.id },
-  });
+    return preloadQuery({
+        query: GET_DOG,
+        variables: { id: params.id },
+    });
 }
 
 // Route component
 export default function DogRoute() {
-  const queryRef = useLoaderData();
+    const queryRef = useLoaderData();
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DogDetails queryRef={queryRef} />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <DogDetails queryRef={queryRef} />
+        </Suspense>
+    );
 }
 
 function DogDetails({ queryRef }: { queryRef: QueryRef<DogData> }) {
-  const { data } = useReadQuery(queryRef);
+    const { data } = useReadQuery(queryRef);
 
-  return (
-    <div>
-      <h1>{data.dog.name}</h1>
-      <p>Breed: {data.dog.breed}</p>
-    </div>
-  );
+    return (
+        <div>
+            <h1>{data.dog.name}</h1>
+            <p>Breed: {data.dog.breed}</p>
+        </div>
+    );
 }
 ```
 
@@ -301,13 +305,13 @@ Use the `toPromise()` method to prevent route transitions until the query finish
 
 ```tsx
 export async function loader({ params }: { params: { id: string } }) {
-  const queryRef = preloadQuery({
-    query: GET_DOG,
-    variables: { id: params.id },
-  });
+    const queryRef = preloadQuery({
+        query: GET_DOG,
+        variables: { id: params.id },
+    });
 
-  // Wait for the query to complete before transitioning
-  return queryRef.toPromise();
+    // Wait for the query to complete before transitioning
+    return queryRef.toPromise();
 }
 ```
 
@@ -331,29 +335,29 @@ The `useQueryRefHandlers` hook provides access to `refetch` and `fetchMore` func
 import { useQueryRefHandlers } from "@apollo/client/react";
 
 function Breeds({ queryRef }: { queryRef: QueryRef<BreedsData> }) {
-  const { refetch } = useQueryRefHandlers(queryRef);
-  const { data } = useReadQuery(queryRef);
-  const [isPending, startTransition] = useTransition();
+    const { refetch } = useQueryRefHandlers(queryRef);
+    const { data } = useReadQuery(queryRef);
+    const [isPending, startTransition] = useTransition();
 
-  return (
-    <div>
-      <button
-        disabled={isPending}
-        onClick={() => {
-          startTransition(() => {
-            refetch();
-          });
-        }}
-      >
-        {isPending ? "Refetching..." : "Refetch breeds"}
-      </button>
-      <ul>
-        {data.breeds.map((breed) => (
-          <li key={breed.id}>{breed.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div>
+            <button
+                disabled={isPending}
+                onClick={() => {
+                    startTransition(() => {
+                        refetch();
+                    });
+                }}
+            >
+                {isPending ? "Refetching..." : "Refetch breeds"}
+            </button>
+            <ul>
+                {data.breeds.map((breed) => (
+                    <li key={breed.id}>{breed.name}</li>
+                ))}
+            </ul>
+        </div>
+    );
 }
 ```
 
@@ -363,33 +367,33 @@ Use `fetchMore` to implement pagination:
 
 ```tsx
 function Posts({ queryRef }: { queryRef: QueryRef<PostsData> }) {
-  const { fetchMore } = useQueryRefHandlers(queryRef);
-  const { data } = useReadQuery(queryRef);
-  const [isPending, startTransition] = useTransition();
+    const { fetchMore } = useQueryRefHandlers(queryRef);
+    const { data } = useReadQuery(queryRef);
+    const [isPending, startTransition] = useTransition();
 
-  return (
-    <div>
-      <ul>
-        {data.posts.map((post) => (
-          <li key={post.id}>{post.title}</li>
-        ))}
-      </ul>
-      <button
-        disabled={isPending}
-        onClick={() => {
-          startTransition(() => {
-            fetchMore({
-              variables: {
-                offset: data.posts.length,
-              },
-            });
-          });
-        }}
-      >
-        {isPending ? "Loading..." : "Load more"}
-      </button>
-    </div>
-  );
+    return (
+        <div>
+            <ul>
+                {data.posts.map((post) => (
+                    <li key={post.id}>{post.title}</li>
+                ))}
+            </ul>
+            <button
+                disabled={isPending}
+                onClick={() => {
+                    startTransition(() => {
+                        fetchMore({
+                            variables: {
+                                offset: data.posts.length,
+                            },
+                        });
+                    });
+                }}
+            >
+                {isPending ? "Loading..." : "Load more"}
+            </button>
+        </div>
+    );
 }
 ```
 
@@ -408,24 +412,24 @@ Use the `queryKey` option to ensure each hook has a unique identity:
 
 ```tsx
 function UserProfile() {
-  // First query with unique key
-  const { data: userData } = useSuspenseQuery(GET_USER, {
-    variables: { id: "1" },
-    queryKey: ["user-profile"],
-  });
+    // First query with unique key
+    const { data: userData } = useSuspenseQuery(GET_USER, {
+        variables: { id: "1" },
+        queryKey: ["user-profile"],
+    });
 
-  // Second query with same query and variables but different key
-  const { data: userPreview } = useSuspenseQuery(GET_USER, {
-    variables: { id: "1" },
-    queryKey: ["user-preview"],
-  });
+    // Second query with same query and variables but different key
+    const { data: userPreview } = useSuspenseQuery(GET_USER, {
+        variables: { id: "1" },
+        queryKey: ["user-preview"],
+    });
 
-  return (
-    <div>
-      <UserCard user={userData.user} />
-      <UserSidebar user={userPreview.user} />
-    </div>
-  );
+    return (
+        <div>
+            <UserCard user={userData.user} />
+            <UserSidebar user={userPreview.user} />
+        </div>
+    );
 }
 ```
 
@@ -445,27 +449,27 @@ Wrap components that use Suspense hooks with `<Suspense>` boundaries to handle l
 
 ```tsx
 function App() {
-  return (
-    <>
-      {/* Top-level loading for entire page */}
-      <Suspense fallback={<PageSpinner />}>
-        <Header />
-        <Content />
-      </Suspense>
-    </>
-  );
+    return (
+        <>
+            {/* Top-level loading for entire page */}
+            <Suspense fallback={<PageSpinner />}>
+                <Header />
+                <Content />
+            </Suspense>
+        </>
+    );
 }
 
 function Content() {
-  return (
-    <>
-      <MainSection />
-      {/* Granular loading for sidebar */}
-      <Suspense fallback={<SidebarSkeleton />}>
-        <Sidebar />
-      </Suspense>
-    </>
-  );
+    return (
+        <>
+            <MainSection />
+            {/* Granular loading for sidebar */}
+            <Suspense fallback={<SidebarSkeleton />}>
+                <Sidebar />
+            </Suspense>
+        </>
+    );
 }
 ```
 
@@ -477,20 +481,20 @@ Suspense hooks throw errors to React error boundaries instead of returning them.
 import { ErrorBoundary } from "react-error-boundary";
 
 function App() {
-  return (
-    <ErrorBoundary
-      fallback={({ error }) => (
-        <div>
-          <h2>Something went wrong</h2>
-          <p>{error.message}</p>
-        </div>
-      )}
-    >
-      <Suspense fallback={<div>Loading...</div>}>
-        <Dog id="3" />
-      </Suspense>
-    </ErrorBoundary>
-  );
+    return (
+        <ErrorBoundary
+            fallback={({ error }) => (
+                <div>
+                    <h2>Something went wrong</h2>
+                    <p>{error.message}</p>
+                </div>
+            )}
+        >
+            <Suspense fallback={<div>Loading...</div>}>
+                <Dog id="3" />
+            </Suspense>
+        </ErrorBoundary>
+    );
 }
 ```
 
@@ -500,17 +504,17 @@ Use `errorPolicy` to control how errors are handled:
 
 ```tsx
 function Dog({ id }: { id: string }) {
-  const { data, error } = useSuspenseQuery(GET_DOG, {
-    variables: { id },
-    errorPolicy: "all", // Return both data and errors
-  });
+    const { data, error } = useSuspenseQuery(GET_DOG, {
+        variables: { id },
+        errorPolicy: "all", // Return both data and errors
+    });
 
-  return (
-    <>
-      <div>Name: {data?.dog?.name ?? "Unknown"}</div>
-      {error && <div>Warning: {error.message}</div>}
-    </>
-  );
+    return (
+        <>
+            <div>Name: {data?.dog?.name ?? "Unknown"}</div>
+            {error && <div>Warning: {error.message}</div>}
+        </>
+    );
 }
 ```
 
@@ -524,31 +528,31 @@ Use React transitions to avoid showing loading UI when updating state. Transitio
 import { useState, Suspense, startTransition } from "react";
 
 function DogSelector() {
-  const { data } = useSuspenseQuery(GET_DOGS);
-  const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
+    const { data } = useSuspenseQuery(GET_DOGS);
+    const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
 
-  return (
-    <>
-      <select
-        value={selectedDog}
-        onChange={(e) => {
-          // Wrap state update in startTransition
-          startTransition(() => {
-            setSelectedDog(e.target.value);
-          });
-        }}
-      >
-        {data.dogs.map((dog) => (
-          <option key={dog.id} value={dog.id}>
-            {dog.name}
-          </option>
-        ))}
-      </select>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Dog id={selectedDog} />
-      </Suspense>
-    </>
-  );
+    return (
+        <>
+            <select
+                value={selectedDog}
+                onChange={(e) => {
+                    // Wrap state update in startTransition
+                    startTransition(() => {
+                        setSelectedDog(e.target.value);
+                    });
+                }}
+            >
+                {data.dogs.map((dog) => (
+                    <option key={dog.id} value={dog.id}>
+                        {dog.name}
+                    </option>
+                ))}
+            </select>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Dog id={selectedDog} />
+            </Suspense>
+        </>
+    );
 }
 ```
 
@@ -560,32 +564,32 @@ Use `useTransition` to get an `isPending` flag for visual feedback during transi
 import { useState, Suspense, useTransition } from "react";
 
 function DogSelector() {
-  const [isPending, startTransition] = useTransition();
-  const { data } = useSuspenseQuery(GET_DOGS);
-  const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
+    const [isPending, startTransition] = useTransition();
+    const { data } = useSuspenseQuery(GET_DOGS);
+    const [selectedDog, setSelectedDog] = useState(data.dogs[0].id);
 
-  return (
-    <>
-      <select
-        style={{ opacity: isPending ? 0.5 : 1 }}
-        value={selectedDog}
-        onChange={(e) => {
-          startTransition(() => {
-            setSelectedDog(e.target.value);
-          });
-        }}
-      >
-        {data.dogs.map((dog) => (
-          <option key={dog.id} value={dog.id}>
-            {dog.name}
-          </option>
-        ))}
-      </select>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Dog id={selectedDog} />
-      </Suspense>
-    </>
-  );
+    return (
+        <>
+            <select
+                style={{ opacity: isPending ? 0.5 : 1 }}
+                value={selectedDog}
+                onChange={(e) => {
+                    startTransition(() => {
+                        setSelectedDog(e.target.value);
+                    });
+                }}
+            >
+                {data.dogs.map((dog) => (
+                    <option key={dog.id} value={dog.id}>
+                        {dog.name}
+                    </option>
+                ))}
+            </select>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Dog id={selectedDog} />
+            </Suspense>
+        </>
+    );
 }
 ```
 
@@ -601,55 +605,55 @@ When queries don't depend on each other, use `useBackgroundQuery` to start them 
 
 ```tsx
 const GET_USER = gql`
-  query GetUser($id: String!) {
-    user(id: $id) {
-      id
-      name
+    query GetUser($id: String!) {
+        user(id: $id) {
+            id
+            name
+        }
     }
-  }
 `;
 
 const GET_POSTS = gql`
-  query GetPosts {
-    posts {
-      id
-      title
+    query GetPosts {
+        posts {
+            id
+            title
+        }
     }
-  }
 `;
 
 function Parent() {
-  // Both queries start immediately - no waterfall
-  const [userRef] = useBackgroundQuery(GET_USER, {
-    variables: { id: "1" },
-  });
+    // Both queries start immediately - no waterfall
+    const [userRef] = useBackgroundQuery(GET_USER, {
+        variables: { id: "1" },
+    });
 
-  const [postsRef] = useBackgroundQuery(GET_POSTS);
+    const [postsRef] = useBackgroundQuery(GET_POSTS);
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UserProfile queryRef={userRef} />
-      <PostsList queryRef={postsRef} />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <UserProfile queryRef={userRef} />
+            <PostsList queryRef={postsRef} />
+        </Suspense>
+    );
 }
 
 function UserProfile({ queryRef }: { queryRef: QueryRef<UserData> }) {
-  const { data } = useReadQuery(queryRef);
+    const { data } = useReadQuery(queryRef);
 
-  return <div>User: {data.user.name}</div>;
+    return <div>User: {data.user.name}</div>;
 }
 
 function PostsList({ queryRef }: { queryRef: QueryRef<PostsData> }) {
-  const { data } = useReadQuery(queryRef);
+    const { data } = useReadQuery(queryRef);
 
-  return (
-    <ul>
-      {data.posts.map((post) => (
-        <li key={post.id}>{post.title}</li>
-      ))}
-    </ul>
-  );
+    return (
+        <ul>
+            {data.posts.map((post) => (
+                <li key={post.id}>{post.title}</li>
+            ))}
+        </ul>
+    );
 }
 ```
 
@@ -669,17 +673,17 @@ Suspense hooks support most of the same fetch policies as `useQuery`, controllin
 ```tsx
 // Always fetch fresh data
 const { data } = useSuspenseQuery(GET_NOTIFICATIONS, {
-  fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
 });
 
 // Prefer cached data
 const { data } = useSuspenseQuery(GET_CATEGORIES, {
-  fetchPolicy: "cache-first",
+    fetchPolicy: "cache-first",
 });
 
 // Show cached data while fetching fresh data
 const { data } = useSuspenseQuery(GET_POSTS, {
-  fetchPolicy: "cache-and-network",
+    fetchPolicy: "cache-and-network",
 });
 ```
 
@@ -708,30 +712,30 @@ Use `skipToken` to conditionally skip queries without TypeScript issues. When `s
 import { skipToken } from "@apollo/client";
 
 const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      name
-      email
+    query GetUser($id: ID!) {
+        user(id: $id) {
+            id
+            name
+            email
+        }
     }
-  }
 `;
 
 function UserProfile({ userId }: { userId: string | null }) {
-  const { data, dataState } = useSuspenseQuery(
-    GET_USER,
-    !userId
-      ? skipToken
-      : {
-          variables: { id: userId },
-        },
-  );
+    const { data, dataState } = useSuspenseQuery(
+        GET_USER,
+        !userId
+            ? skipToken
+            : {
+                  variables: { id: userId },
+              },
+    );
 
-  if (dataState !== "complete") {
-    return <p>Select a user</p>;
-  }
+    if (dataState !== "complete") {
+        return <p>Select a user</p>;
+    }
 
-  return <Profile user={data.user} />;
+    return <Profile user={data.user} />;
 }
 ```
 
@@ -741,23 +745,23 @@ Alternatively, use conditional rendering to control when Suspense hooks are call
 
 ```tsx
 function UserProfile({ userId }: { userId: string | null }) {
-  if (!userId) {
-    return <p>Select a user</p>;
-  }
+    if (!userId) {
+        return <p>Select a user</p>;
+    }
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UserDetails userId={userId} />
-    </Suspense>
-  );
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <UserDetails userId={userId} />
+        </Suspense>
+    );
 }
 
 function UserDetails({ userId }: { userId: string }) {
-  const { data } = useSuspenseQuery(GET_USER, {
-    variables: { id: userId },
-  });
+    const { data } = useSuspenseQuery(GET_USER, {
+        variables: { id: userId },
+    });
 
-  return <Profile user={data.user} />;
+    return <Profile user={data.user} />;
 }
 ```
 
