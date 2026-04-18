@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  nest_rest_api:
+  api:
     build:
-      context: ./apps/nest_rest_api
+      context: ./apps/api
       dockerfile: Dockerfile.dev
       target: development
     ports:
@@ -10,16 +10,10 @@ services:
     develop:
       watch:
         - action: sync
-          path: ./apps/nest_rest_api
-          target: /app
-          ignore:
-            - node_modules
-            - .git/
+          path: ./apps/api/src
+          target: /app/src
         - action: rebuild
-          path: ./apps/nest_rest_api/package.json
-        - action: sync+restart
-          path: ./apps/nest_rest_api
-          target: /app
+          path: ./apps/api/package.json
 
   web:
     build:
@@ -31,13 +25,7 @@ services:
     develop:
       watch:
         - action: sync
-          path: ./apps/web
-          target: /app
-          ignore:
-            - node_modules
-            - .git/
+          path: ./apps/web/src
+          target: /app/src
         - action: rebuild
           path: ./apps/web/package.json
-        - action: sync+restart
-          path: ./apps/web
-          target: /app
