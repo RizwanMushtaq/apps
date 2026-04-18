@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTodoInput } from './dto/create-todo.input';
+import { CreateTodoInput } from './dtos/create-todo.input';
 import { Todo } from './models/todo.model';
 
 @Injectable()
