@@ -7,14 +7,14 @@ import { join } from 'path';
 import { TodosModule } from './todos/todos.module';
 
 @Module({
-  imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'schema.gql'),
-    }),
-    TodosModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            driver: ApolloDriver,
+            autoSchemaFile: join(process.cwd(), 'schema.gql'),
+        }),
+        TodosModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

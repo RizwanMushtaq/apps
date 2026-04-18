@@ -6,8 +6,6 @@
     "scripts": {
         "build": "turbo run build",
         "dev": "turbo run dev",
-        "lint": "turbo run lint",
-        "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "devDependencies": {

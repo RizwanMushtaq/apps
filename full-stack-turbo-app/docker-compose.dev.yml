@@ -1,31 +1,31 @@
-version: "3.8"
+version: '3.8'
 services:
-  api:
-    build:
-      context: ./apps/api
-      dockerfile: Dockerfile.dev
-      target: development
-    ports:
-      - "3000:3000"
-    develop:
-      watch:
-        - action: sync
-          path: ./apps/api/src
-          target: /app/src
-        - action: rebuild
-          path: ./apps/api/package.json
+    api:
+        build:
+            context: ./apps/api
+            dockerfile: Dockerfile.dev
+            target: development
+        ports:
+            - '3000:3000'
+        develop:
+            watch:
+                - action: sync
+                  path: ./apps/api/src
+                  target: /app/src
+                - action: rebuild
+                  path: ./apps/api/package.json
 
-  web:
-    build:
-      context: ./apps/web
-      dockerfile: Dockerfile.dev
-      target: development
-    ports:
-      - "5173:5173"
-    develop:
-      watch:
-        - action: sync
-          path: ./apps/web/src
-          target: /app/src
-        - action: rebuild
-          path: ./apps/web/package.json
+    web:
+        build:
+            context: ./apps/web
+            dockerfile: Dockerfile.dev
+            target: development
+        ports:
+            - '5173:5173'
+        develop:
+            watch:
+                - action: sync
+                  path: ./apps/web/src
+                  target: /app/src
+                - action: rebuild
+                  path: ./apps/web/package.json

@@ -1,11 +1,11 @@
 {
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"]
-    },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "cache": false
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"]
+        },
+        "dev": {
+            "dependsOn": ["^dev"],
+            "cache": false
+        }
     }
-  }
 }

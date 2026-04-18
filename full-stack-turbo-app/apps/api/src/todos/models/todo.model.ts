@@ -1,11 +1,17 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Todo {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
+    @Field(() => ID)
+    id!: number;
+    @Field()
+    title!: string;
+    @Field()
+    description!: string;
+    @Field()
+    status!: string;
+    @Field()
+    createdAt!: Date;
+    @Field()
+    updatedAt!: Date;
 }

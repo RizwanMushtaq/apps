@@ -3,6 +3,6 @@ import { TodosService } from './todos.service';
 import { TodosResolver } from './todos.resolver';
 
 @Module({
-  providers: [TodosService, TodosResolver],
+    providers: [TodosService, TodosResolver],
 })
 export class TodosModule {}
