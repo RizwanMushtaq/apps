@@ -10,8 +10,4 @@ export class Todo {
     description!: string;
     @Field()
     status!: string;
-    @Field()
-    createdAt!: Date;
-    @Field()
-    updatedAt!: Date;
 }
