@@ -1,19 +1,27 @@
 {
-  "private": true,
-  "name": "monorepo",
-  "version": "1.0.0",
-  "packageManager": "npm@10.0.0",
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "devDependencies": {
-    "turbo": "latest"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "private": true,
+    "name": "monorepo",
+    "version": "1.0.0",
+    "packageManager": "npm@10.0.0",
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\" \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "prettier": "latest",
+        "turbo": "latest"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "singleQuote": true,
+        "trailingComma": "all",
+        "printWidth": 100
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ]
 }
