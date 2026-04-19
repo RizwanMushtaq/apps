@@ -5,6 +5,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TodosModule } from './todos/todos.module';
+import { CoffeesController } from './coffees/coffees.controller';
+import { CoffeesService } from './coffees/coffees.service';
 
 @Module({
     imports: [
@@ -14,7 +16,7 @@ import { TodosModule } from './todos/todos.module';
         }),
         TodosModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [AppController, CoffeesController],
+    providers: [AppService, CoffeesService],
 })
 export class AppModule {}
