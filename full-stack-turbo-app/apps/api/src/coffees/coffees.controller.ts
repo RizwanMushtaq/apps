@@ -3,7 +3,6 @@ import {
     Controller,
     Delete,
     Get,
-    NotFoundException,
     Param,
     ParseIntPipe,
     Patch,
@@ -28,11 +27,7 @@ export class CoffeesController {
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
-        const coffee = this.coffeesService.findOne(id);
-        if (!coffee) {
-            throw new NotFoundException(`Coffee #${id} not found`);
-        }
-        return coffee;
+        return this.coffeesService.findOne(id);
     }
 
     @Post()
