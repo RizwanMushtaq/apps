@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TodosModule } from './todos/todos.module';
 import { CoffeesModule } from './coffees/coffees.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
@@ -13,6 +14,16 @@ import { CoffeesModule } from './coffees/coffees.module';
         }),
         TodosModule,
         CoffeesModule,
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'postgres',
+            password: 'postgres',
+            database: 'postgres',
+            autoLoadEntities: true,
+            synchronize: true,
+        }),
     ],
     controllers: [],
     providers: [],
