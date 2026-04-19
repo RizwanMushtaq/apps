@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TodosModule } from './todos/todos.module';
-import { CoffeesController } from './coffees/coffees.controller';
-import { CoffeesService } from './coffees/coffees.service';
+import { CoffeesModule } from './coffees/coffees.module';
 
 @Module({
     imports: [
@@ -15,8 +12,9 @@ import { CoffeesService } from './coffees/coffees.service';
             autoSchemaFile: join(process.cwd(), 'schema.gql'),
         }),
         TodosModule,
+        CoffeesModule,
     ],
-    controllers: [AppController, CoffeesController],
-    providers: [AppService, CoffeesService],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}
