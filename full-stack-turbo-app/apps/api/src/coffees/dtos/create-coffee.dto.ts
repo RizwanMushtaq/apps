@@ -1,5 +1,4 @@
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmpty, IsString } from 'class-validator';
-import { Flavor } from '../entities/flavor.entity';
 
 export class CreateCoffeeDto {
     @IsDefined()
@@ -16,5 +15,5 @@ export class CreateCoffeeDto {
     @IsArray()
     @ArrayNotEmpty()
     @IsString({ each: true })
-    readonly flavors!: Flavor[];
+    readonly flavors!: string[];
 }
