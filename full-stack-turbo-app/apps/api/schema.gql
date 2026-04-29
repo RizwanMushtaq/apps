@@ -3,30 +3,30 @@
 # ------------------------------------------------------
 
 type Todo {
-  id: ID!
-  title: String!
-  description: String!
-  status: String!
+    id: ID!
+    title: String!
+    description: String!
+    status: String!
 }
 
 type Query {
-  todos: [Todo!]!
+    todos: [Todo!]!
 }
 
 type Mutation {
-  createTodo(createTodoInput: CreateTodoInput!): Todo!
-  updateTodo(id: Float!, updateTodoInput: UpdateTodoInput!): Todo!
-  deleteTodo(id: Float!): Boolean!
+    createTodo(createTodoInput: CreateTodoInput!): Todo!
+    updateTodo(id: Float!, updateTodoInput: UpdateTodoInput!): Todo!
+    deleteTodo(id: Float!): Boolean!
 }
 
 input CreateTodoInput {
-  title: String!
-  description: String!
-  status: String!
+    title: String!
+    description: String!
+    status: String!
 }
 
 input UpdateTodoInput {
-  title: String
-  description: String
-  status: String
+    title: String
+    description: String
+    status: String
 }
