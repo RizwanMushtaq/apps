@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Flavor } from './entities/flavor.entity';
 import { PaginationQueryDto } from './dtos/pagination-query.dto';
-import { Event } from '../events/entities/event.entity';
 
 @Injectable()
 export class CoffeesService {
@@ -70,26 +69,6 @@ export class CoffeesService {
     async remove(id: number) {
         const existingCoffee = await this.findOne(id);
         return this.coffeeRepository.remove(existingCoffee);
-    }
-
-    async recommendCoffee(coffee: Coffee) {
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        try {
-            coffee.recommendations++;
-            const recommendEvent = new Event();
-            recommendEvent.name = 'recommend_coffee';
-            recommendEvent.type = 'coffee';
-            recommendEvent.payload = { coffeeId: coffee.id };
-            await queryRunner.commitTransaction();
-        } catch (error) {
-            console.error(error);
-            await queryRunner.rollbackTransaction();
-        } finally {
-            await queryRunner.release();
-        }
     }
 
     private async preloadFlavorByName(name: string): Promise<Flavor> {
