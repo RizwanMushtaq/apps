@@ -1,0 +1,74 @@
+version: '3.8'
+services:
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: development
+        ports:
+            - '3000:3000'
+        environment:
+            NODE_ENV: development
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: postgres
+            POSTGRES_HOST: db
+        depends_on:
+            db:
+                condition: service_healthy
+        develop:
+            watch:
+                - action: sync
+                  path: ./src
+                  target: /app/src
+                - action: rebuild
+                  path: ./package.json
+        networks:
+            - backend
+    db:
+        image: postgres:16-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+            POSTGRES_DB: ${POSTGRES_DB:-postgres}
+        ports:
+            - '5432:5432'
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        networks:
+            - backend
+
+    pgadmin:
+        image: dpage/pgadmin4:8
+        restart: unless-stopped
+        depends_on:
+            db:
+                condition: service_healthy
+        ports:
+            - '${PGADMIN_PORT:-5050}:80'
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+        networks:
+            - backend
+
+volumes:
+    db-data:
+    pgadmin-data:
+
+networks:
+    backend:
+        driver: bridge
