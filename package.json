@@ -10,7 +10,7 @@
     "author": "",
     "type": "module",
     "scripts": {
-        "test": "echo 'running precommit hooks'"
+        "running-precommit-hooks": "echo 'running precommit hooks'"
     },
     "devDependencies": {
         "@commitlint/cli": "^20.5.3",
