@@ -8,11 +8,9 @@
     },
     "license": "ISC",
     "author": "",
-    "type": "commonjs",
-    "main": "index.js",
+    "type": "module",
     "scripts": {
-        "test": "echo 'precommit hook test'",
-        "prepare": "husky"
+        "test": "echo 'running precommit hooks'"
     },
     "devDependencies": {
         "@commitlint/cli": "^20.5.3",
