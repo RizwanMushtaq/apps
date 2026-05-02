@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/database/prisma.service';
 import { Prisma } from '@app/generated/prisma/client';
 
@@ -11,7 +11,7 @@ export class UsersService {
         await this.databaseService.user.create({ data });
     }
 
-    async users(params: {
+    async getAll(params: {
         skip?: number;
         take?: number;
         cursor?: Prisma.UserWhereUniqueInput;
@@ -28,10 +28,16 @@ export class UsersService {
         });
     }
 
-    async user(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
-        return this.databaseService.user.findUnique({
+    async getUser(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
+        const user = await this.databaseService.user.findUnique({
             where: userWhereUniqueInput,
         });
+        if (!user) {
+            throw new NotFoundException(
+                `User with unique input ${JSON.stringify(userWhereUniqueInput)} not found`,
+            );
+        }
+        return user;
     }
 
     async update(params: {
@@ -39,6 +45,7 @@ export class UsersService {
         data: Prisma.UserUpdateInput;
     }) {
         const { where, data } = params;
+        await this.getUser(where);
         return this.databaseService.user.update({
             data,
             where,
@@ -46,6 +53,7 @@ export class UsersService {
     }
 
     async delete(where: Prisma.UserWhereUniqueInput) {
+        await this.getUser(where);
         return this.databaseService.user.delete({
             where,
         });

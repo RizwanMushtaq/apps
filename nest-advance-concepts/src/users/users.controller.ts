@@ -23,12 +23,12 @@ export class UsersController {
 
     @Get()
     async findAll() {
-        return this.usersService.users({});
+        return this.usersService.getAll({});
     }
 
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.user({ id });
+        return this.usersService.getUser({ id });
     }
 
     @Patch(':id')
