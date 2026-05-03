@@ -38,6 +38,6 @@ This project demonstrates advanced concepts in a NestJS application, including D
 - `Dockerfile` – Docker build instructions
 - `docker-compose.yml` – Multi-service orchestration
 
-## License
+## Reference Material
 
-UNLICENSED
+- <https://github.com/prisma/nestjs-workshop-prisma-day-22/tree/main>
