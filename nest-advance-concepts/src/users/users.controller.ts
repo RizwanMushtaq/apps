@@ -7,16 +7,19 @@ import {
     ParseIntPipe,
     Patch,
     Post,
+    UseGuards,
 } from '@nestjs/common';
 import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/updateUser.dto';
+import { MockAuthGuard } from '../common/guards/mock-auth.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Post()
+    @UseGuards(MockAuthGuard)
     async create(@Body() createUserDto: UserDto) {
         return this.usersService.create(createUserDto);
     }
@@ -32,6 +35,7 @@ export class UsersController {
     }
 
     @Patch(':id')
+    @UseGuards(MockAuthGuard)
     async update(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateUserDto: UpdateUserDto,
