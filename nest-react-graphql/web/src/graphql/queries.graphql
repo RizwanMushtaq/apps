@@ -1,3 +1,35 @@
 query GetHello {
     getHello
 }
+
+query GetUsers {
+    getUsers {
+        id
+        name
+        email
+    }
+}
+
+query GetUser($id: Float!) {
+    getUser(id: $id) {
+        id
+        name
+        email
+    }
+}
+
+mutation CreateUser($createUserInput: CreateUserInput!) {
+    createUser(createUserInput: $createUserInput) {
+        id
+        name
+        email
+    }
+}
+
+mutation DeleteUser($id: Float!) {
+    deleteUser(id: $id) {
+        id
+        name
+        email
+    }
+}
