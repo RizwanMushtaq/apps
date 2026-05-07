@@ -33,3 +33,11 @@ mutation DeleteUser($id: Float!) {
         email
     }
 }
+
+subscription UserCreated {
+    userCreated {
+        id
+        name
+        email
+    }
+}

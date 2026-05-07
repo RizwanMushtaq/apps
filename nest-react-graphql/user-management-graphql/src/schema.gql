@@ -3,56 +3,43 @@
 # ------------------------------------------------------
 
 type User {
-  """
-  The unique identifier of the user
-  """
+  """The unique identifier of the user"""
   id: Float!
 
-  """
-  The name of the user
-  """
+  """The name of the user"""
   name: String!
 
-  """
-  The email of the user
-  """
+  """The email of the user"""
   email: String!
 }
 
 type Query {
   getHello: String!
 
-  """
-  Get all users
-  """
+  """Get all users"""
   getUsers: [User!]!
 
-  """
-  Get a user by ID
-  """
+  """Get a user by ID"""
   getUser(id: Float!): User!
 }
 
 type Mutation {
-  """
-  Create a new user
-  """
+  """Create a new user"""
   createUser(createUserInput: CreateUserInput!): User!
 
-  """
-  Delete a user
-  """
+  """Delete a user"""
   deleteUser(id: Float!): User!
 }
 
 input CreateUserInput {
-  """
-  The name of the user
-  """
+  """The name of the user"""
   name: String!
 
-  """
-  The email of the user
-  """
+  """The email of the user"""
   email: String!
+}
+
+type Subscription {
+  """Subscribe when a user is created"""
+  userCreated: User!
 }

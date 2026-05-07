@@ -8,13 +8,11 @@ const config: CodegenConfig = {
             plugins: [
                 'typescript',
                 'typescript-operations',
-                'typescript-react-apollo',
+                'typed-document-node',
             ],
             config: {
-                withHooks: false,
-                withMutationFn: false,
-                withMutationOptionsType: false,
-                apolloReactCommonImportFrom: '@apollo/client/react',
+                preResolveTypes: false,
+                useTypeImports: true,
             },
         },
     },
