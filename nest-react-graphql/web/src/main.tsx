@@ -2,11 +2,16 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
-import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
+import {
+    ApolloClient,
+    ApolloLink,
+    HttpLink,
+    InMemoryCache,
+} from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from 'graphql-ws';
+import { OperationTypeNode } from 'graphql';
 
 const httpUri = import.meta.env.VITE_API_GRAPHQL_URI;
 const wsUri = httpUri.replace(/^http/, 'ws');
@@ -18,14 +23,8 @@ const wsLink = new GraphQLWsLink(
     }),
 );
 
-const splitLink = split(
-    ({ query }) => {
-        const definition = getMainDefinition(query);
-        return (
-            definition.kind === 'OperationDefinition' &&
-            definition.operation === 'subscription'
-        );
-    },
+const splitLink = ApolloLink.split(
+    ({ operationType }) => operationType === OperationTypeNode.SUBSCRIPTION,
     wsLink,
     httpLink,
 );
