@@ -4,14 +4,9 @@ const config: CodegenConfig = {
     schema: '../user-management-graphql/src/schema.gql',
     documents: 'src/**/*.graphql',
     generates: {
-        'src/generated/graphql.ts': {
-            plugins: [
-                'typescript',
-                'typescript-operations',
-                'typed-document-node',
-            ],
+        './src/generated/': {
+            preset: 'client',
             config: {
-                preResolveTypes: false,
                 useTypeImports: true,
             },
         },
