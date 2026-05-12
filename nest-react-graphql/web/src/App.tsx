@@ -5,15 +5,59 @@ import {
     CreateUserDocument,
     GetUsersDocument,
     UserCreatedDocument,
+    UpdateUserDocument,
     type CreateUserMutation,
     type CreateUserMutationVariables,
     type GetUsersQuery,
     type UserCreatedSubscription,
+    type UpdateUserMutation,
+    type UpdateUserMutationVariables,
 } from './generated/graphql';
 
 function App() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+
+    const [editId, setEditId] = useState<number | null>(null);
+    const [editName, setEditName] = useState('');
+    const [editEmail, setEditEmail] = useState('');
+
+    const [updateUser, { loading: updateLoading, error: updateError }] =
+        useMutation<UpdateUserMutation, UpdateUserMutationVariables>(
+            UpdateUserDocument,
+            {
+                refetchQueries: [{ query: GetUsersDocument }],
+                awaitRefetchQueries: true,
+                onCompleted: () => {
+                    setEditId(null);
+                    setEditName('');
+                    setEditEmail('');
+                },
+            },
+        );
+
+    const onEditClick = (user: { id: number; name: string; email: string }) => {
+        setEditId(user.id);
+        setEditName(user.name);
+        setEditEmail(user.email);
+    };
+
+    const onUpdateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!editId) return;
+        const trimmedName = editName.trim();
+        const trimmedEmail = editEmail.trim();
+        if (!trimmedName || !trimmedEmail) return;
+        await updateUser({
+            variables: {
+                id: editId,
+                updateUserInput: {
+                    name: trimmedName,
+                    email: trimmedEmail,
+                },
+            },
+        });
+    };
 
     const {
         data: usersData,
@@ -114,11 +158,62 @@ function App() {
                 <ul className="user-list">
                     {users.map((user) => (
                         <li key={user.id} className="user-card">
-                            <strong>{user.name}</strong>
-                            <span>{user.email}</span>
+                            {editId === user.id ? (
+                                <form
+                                    onSubmit={onUpdateUser}
+                                    className="edit-user-form"
+                                >
+                                    <input
+                                        type="text"
+                                        value={editName}
+                                        onChange={(e) =>
+                                            setEditName(e.target.value)
+                                        }
+                                        placeholder="Name"
+                                    />
+                                    <input
+                                        type="email"
+                                        value={editEmail}
+                                        onChange={(e) =>
+                                            setEditEmail(e.target.value)
+                                        }
+                                        placeholder="Email"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={updateLoading}
+                                    >
+                                        {updateLoading
+                                            ? 'Updating...'
+                                            : 'Update'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditId(null)}
+                                    >
+                                        Cancel
+                                    </button>
+                                </form>
+                            ) : (
+                                <>
+                                    <strong>{user.name}</strong>
+                                    <span>{user.email}</span>
+                                    <button
+                                        onClick={() => onEditClick(user)}
+                                        style={{ marginLeft: 8 }}
+                                    >
+                                        Edit
+                                    </button>
+                                </>
+                            )}
                         </li>
                     ))}
                 </ul>
+                {updateError && (
+                    <p className="status error">
+                        Update error: {updateError.message}
+                    </p>
+                )}
             </section>
         </main>
     );

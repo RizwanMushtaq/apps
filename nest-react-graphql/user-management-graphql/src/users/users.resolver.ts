@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dtos/createUser.input';
 import { PUB_SUB, type UsersSubscriptionEvents } from './users.pubsub.js';
+import { UpdateUserInput } from './dtos/updateUser.input';
 
 @Resolver()
 export class UsersResolver {
@@ -36,13 +37,13 @@ export class UsersResolver {
     return this.pubSub.asyncIterableIterator('userCreated');
   }
 
-  // @Mutation(() => User, { description: 'Update an existing user' })
-  // updateUser(
-  //   @Args('id') id: number,
-  //   @Args('updateUserInput') updateUserInput: UpdateUserInput,
-  // ) {
-  //   return this.usersService.update(id, updateUserInput);
-  // }
+  @Mutation(() => User, { description: 'Update an existing user' })
+  updateUser(
+    @Args('id') id: number,
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+  ) {
+    return this.usersService.update(id, updateUserInput);
+  }
 
   @Mutation(() => User, { description: 'Delete a user' })
   deleteUser(@Args('id') id: number) {

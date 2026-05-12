@@ -26,6 +26,14 @@ mutation CreateUser($createUserInput: CreateUserInput!) {
     }
 }
 
+mutation UpdateUser($id: Float!, $updateUserInput: UpdateUserInput!) {
+    updateUser(id: $id, updateUserInput: $updateUserInput) {
+        id
+        name
+        email
+    }
+}
+
 mutation DeleteUser($id: Float!) {
     deleteUser(id: $id) {
         id

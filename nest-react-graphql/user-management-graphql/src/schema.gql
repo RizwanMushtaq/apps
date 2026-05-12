@@ -27,6 +27,9 @@ type Mutation {
   """Create a new user"""
   createUser(createUserInput: CreateUserInput!): User!
 
+  """Update an existing user"""
+  updateUser(id: Float!, updateUserInput: UpdateUserInput!): User!
+
   """Delete a user"""
   deleteUser(id: Float!): User!
 }
@@ -37,6 +40,14 @@ input CreateUserInput {
 
   """The email of the user"""
   email: String!
+}
+
+input UpdateUserInput {
+  """The name of the user"""
+  name: String
+
+  """The email of the user"""
+  email: String
 }
 
 type Subscription {
