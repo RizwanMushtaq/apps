@@ -13,6 +13,9 @@ import {
     type UpdateUserMutation,
     type UpdateUserMutationVariables,
 } from './generated/graphql';
+import UserForm from './components/UserForm';
+import UserList from './components/UserList';
+import StatusMessage from './components/StatusMessage';
 
 function App() {
     const [name, setName] = useState('');
@@ -117,102 +120,38 @@ function App() {
         <main className="app-shell">
             <section className="panel">
                 <h1>User Management</h1>
-                <form className="user-form" onSubmit={onCreateUser}>
-                    <label>
-                        <span>Name</span>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                            placeholder="Enter user name"
-                        />
-                    </label>
-
-                    <label>
-                        <span>Email</span>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                            placeholder="Enter user email"
-                        />
-                    </label>
-
-                    <button disabled={loading} type="submit">
-                        {loading ? 'Creating...' : 'Create User'}
-                    </button>
-                </form>
-
+                <UserForm
+                    name={name}
+                    email={email}
+                    loading={loading}
+                    onNameChange={setName}
+                    onEmailChange={setEmail}
+                    onSubmit={onCreateUser}
+                />
                 {error && (
-                    <p className="status error">Error: {error.message}</p>
+                    <StatusMessage message={error.message} type="error" />
                 )}
-
                 {latestCreatedUser && (
-                    <p className="status success">
-                        Latest user {latestCreatedUser.name} with email{' '}
-                        {latestCreatedUser.email} created successfully!
-                    </p>
+                    <StatusMessage
+                        message={`Latest user ${latestCreatedUser.name} with email ${latestCreatedUser.email} created successfully!`}
+                        type="success"
+                    />
                 )}
-
                 <h2>Users</h2>
-                <ul className="user-list">
-                    {users.map((user) => (
-                        <li key={user.id} className="user-card">
-                            {editId === user.id ? (
-                                <form
-                                    onSubmit={onUpdateUser}
-                                    className="edit-user-form"
-                                >
-                                    <input
-                                        type="text"
-                                        value={editName}
-                                        onChange={(e) =>
-                                            setEditName(e.target.value)
-                                        }
-                                        placeholder="Name"
-                                    />
-                                    <input
-                                        type="email"
-                                        value={editEmail}
-                                        onChange={(e) =>
-                                            setEditEmail(e.target.value)
-                                        }
-                                        placeholder="Email"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={updateLoading}
-                                    >
-                                        {updateLoading
-                                            ? 'Updating...'
-                                            : 'Update'}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditId(null)}
-                                    >
-                                        Cancel
-                                    </button>
-                                </form>
-                            ) : (
-                                <>
-                                    <strong>{user.name}</strong>
-                                    <span>{user.email}</span>
-                                    <button
-                                        onClick={() => onEditClick(user)}
-                                        style={{ marginLeft: 8 }}
-                                    >
-                                        Edit
-                                    </button>
-                                </>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                <UserList
+                    users={users}
+                    editId={editId}
+                    editName={editName}
+                    editEmail={editEmail}
+                    updateLoading={updateLoading}
+                    onEditClick={onEditClick}
+                    onEditNameChange={setEditName}
+                    onEditEmailChange={setEditEmail}
+                    onUpdateUser={onUpdateUser}
+                    onCancelEdit={() => setEditId(null)}
+                />
                 {updateError && (
-                    <p className="status error">
-                        Update error: {updateError.message}
-                    </p>
+                    <StatusMessage message={updateError.message} type="error" />
                 )}
             </section>
         </main>
