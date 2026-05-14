@@ -9,10 +9,10 @@ import {
     Post,
     UseGuards,
 } from '@nestjs/common';
-import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { MockAuthGuard } from '../common/guards/mock-auth.guard';
+import { CreateUserDto } from './dtos/createUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,8 +20,12 @@ export class UsersController {
 
     @Post()
     @UseGuards(MockAuthGuard)
-    async create(@Body() createUserDto: UserDto) {
-        return this.usersService.create(createUserDto);
+    async create(@Body() createUserDto: CreateUserDto) {
+        const createUserInput = {
+            name: createUserDto.name,
+            email: createUserDto.email,
+        };
+        return this.usersService.create(createUserInput);
     }
 
     @Get()
@@ -40,9 +44,17 @@ export class UsersController {
         @Param('id', ParseIntPipe) id: number,
         @Body() updateUserDto: UpdateUserDto,
     ) {
+        const updateUserInput = {
+            ...(updateUserDto.name !== undefined && {
+                name: updateUserDto.name,
+            }),
+            ...(updateUserDto.email !== undefined && {
+                email: updateUserDto.email,
+            }),
+        };
         return this.usersService.update({
             id,
-            data: updateUserDto,
+            data: updateUserInput,
         });
     }
 
