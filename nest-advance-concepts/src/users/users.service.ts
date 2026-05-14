@@ -7,8 +7,7 @@ export class UsersService {
     constructor(private readonly databaseService: PrismaService) {}
 
     async create(data: Prisma.UserCreateInput) {
-        console.log('Creating user with data:', data);
-        await this.databaseService.user.create({ data });
+        return this.databaseService.user.create({ data });
     }
 
     async getAll(params: {
