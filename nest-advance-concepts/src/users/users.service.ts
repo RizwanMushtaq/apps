@@ -1,60 +1,38 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../common/database/prisma.service';
 import { Prisma } from '@app/generated/prisma/client';
+import { User, UserRepository } from './repository/user.repository';
+import { UpdateUserDto } from './dtos/updateUser.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly databaseService: PrismaService) {}
+    constructor(private readonly userRepository: UserRepository) {}
 
-    async create(data: Prisma.UserCreateInput) {
-        return this.databaseService.user.create({ data });
+    async create(data: Prisma.UserCreateInput): Promise<User> {
+        return this.userRepository.create(data);
     }
 
-    async getAll(params: {
-        skip?: number;
-        take?: number;
-        cursor?: Prisma.UserWhereUniqueInput;
-        where?: Prisma.UserWhereInput;
-        orderBy?: Prisma.UserOrderByWithRelationInput;
-    }) {
-        const { skip, take, cursor, where, orderBy } = params;
-        return this.databaseService.user.findMany({
-            skip,
-            take,
-            cursor,
-            where,
-            orderBy,
-        });
+    async getAll() {
+        return this.userRepository.findAll();
     }
 
-    async getUser(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
-        const user = await this.databaseService.user.findUnique({
-            where: userWhereUniqueInput,
-        });
+    async getUser(id: number) {
+        const user = await this.userRepository.findById(id);
         if (!user) {
             throw new NotFoundException(
-                `User with unique input ${JSON.stringify(userWhereUniqueInput)} not found`,
+                `User with unique input ${JSON.stringify(id)} not found`,
             );
         }
         return user;
     }
 
-    async update(params: {
-        where: Prisma.UserWhereUniqueInput;
-        data: Prisma.UserUpdateInput;
-    }) {
-        const { where, data } = params;
-        await this.getUser(where);
-        return this.databaseService.user.update({
-            data,
-            where,
-        });
+    async update(params: { id: number; data: UpdateUserDto }) {
+        const { id, data } = params;
+        await this.getUser(id);
+        return this.userRepository.update(id, data);
     }
 
-    async delete(where: Prisma.UserWhereUniqueInput) {
-        await this.getUser(where);
-        return this.databaseService.user.delete({
-            where,
-        });
+    async delete(id: number) {
+        await this.getUser(id);
+        return this.userRepository.delete(id);
     }
 }

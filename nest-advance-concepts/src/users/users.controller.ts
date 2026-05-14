@@ -26,12 +26,12 @@ export class UsersController {
 
     @Get()
     async findAll() {
-        return this.usersService.getAll({});
+        return this.usersService.getAll();
     }
 
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.getUser({ id });
+        return this.usersService.getUser(id);
     }
 
     @Patch(':id')
@@ -41,13 +41,13 @@ export class UsersController {
         @Body() updateUserDto: UpdateUserDto,
     ) {
         return this.usersService.update({
-            where: { id },
+            id,
             data: updateUserDto,
         });
     }
 
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.delete({ id });
+        return this.usersService.delete(id);
     }
 }
