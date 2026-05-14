@@ -80,11 +80,11 @@ PGADMIN_DEFAULT_PASSWORD=admin
 docker compose up --build --watch -d
 ```
 
-2. Service URLs:
+1. Service URLs:
 
-- API: http://localhost:3000
+- API: <http://localhost:3000>
 - PostgreSQL: localhost:5432
-- pgAdmin: http://localhost:5050
+- pgAdmin: <http://localhost:5050>
 
 ## Running Locally (Without Docker)
 
@@ -94,15 +94,15 @@ docker compose up --build --watch -d
 npm install
 ```
 
-2. Ensure PostgreSQL is running and `DATABASE_URL` is set.
+1. Ensure PostgreSQL is running and `DATABASE_URL` is set.
 
-3. Apply migrations:
+2. Apply migrations:
 
 ```sh
 npx prisma migrate dev
 ```
 
-4. Start dev server:
+1. Start dev server:
 
 ```sh
 npm run start:dev
@@ -134,4 +134,4 @@ npm run start:dev
 
 ## Reference Material
 
-- https://github.com/prisma/nestjs-workshop-prisma-day-22/tree/main
+- <https://github.com/prisma/nestjs-workshop-prisma-day-22/tree/main>
