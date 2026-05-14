@@ -18,7 +18,7 @@ export class UsersService {
     }
 
     async getUser(id: number) {
-        return await this.userRepository.findById(id);
+        return this.userRepository.findById(id);
     }
 
     async update(params: { id: number; data: UpdateUserInput }) {
