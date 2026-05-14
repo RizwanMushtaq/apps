@@ -1,43 +1,137 @@
 # NestJS Advance Concepts
 
-This project demonstrates advanced concepts in a NestJS application, including Docker-based development and integration with PostgreSQL.
+This project demonstrates practical NestJS advanced patterns with a real PostgreSQL database, Prisma ORM, and Docker-based local development.
 
 ## Features
 
-- NestJS 11.x application
-- Dockerized setup for API and PostgreSQL database
-- Hot-reload support in development mode
+- NestJS 11 application with modular architecture (`AppModule`, `UsersModule`, `DatabaseModule`)
+- Prisma 7 integration using `@prisma/adapter-pg` and generated client in `generated/prisma`
+- User CRUD endpoints with Prisma-backed persistence
+- Global request validation via `ValidationPipe` (`transform`, `whitelist`, `forbidNonWhitelisted`)
+- DTO-based input validation using `class-validator`
+- Route-level authorization guard (`MockAuthGuard`) for write operations
+- Global response interceptor that wraps responses with metadata
+- Global request logging middleware for incoming HTTP traffic
+- Config management with `@nestjs/config` + Zod schema validation
+- Docker Compose stack with API + PostgreSQL + pgAdmin
+- E2E testing setup using Jest + Supertest
 
-## Getting Started
+## Tech Stack
 
-### Prerequisites
+- NestJS 11
+- TypeScript
+- Prisma 7
+- PostgreSQL 16
+- Docker / Docker Compose
+- Zod
+- Jest + Supertest
 
-- [Docker](https://www.docker.com/) and Docker Compose v2+
+## API Behavior Summary
 
-### Running the App
+### Users Endpoints
 
-1. Build and start all services:
+- `POST /users` (guarded)
+- `GET /users`
+- `GET /users/:id`
+- `PATCH /users/:id` (guarded)
+- `DELETE /users/:id`
 
-    ```sh
-    docker compose up --build --watch -d
-    ```
+For guarded routes (`POST`, `PATCH`), include:
 
-2. The API will be available at [http://localhost:3000](http://localhost:3000)
-3. PostgreSQL will be available at port 5432 (default user/password: postgres)
-4. pgAdmin is available at [http://localhost:5050](http://localhost:5050) (default: <admin@example.com> / admin)
+```http
+Authorization: Bearer mock-token
+```
 
-### Development
+### Global Response Shape
 
-- The API runs in watch mode for hot-reloading.
-- Source code changes in `src/` should trigger reloads (see docker-compose.yml for details).
+All successful responses are wrapped by the response interceptor:
+
+```json
+{
+    "success": true,
+    "data": {},
+    "timestamp": "2026-05-14T00:00:00.000Z"
+}
+```
+
+## Environment Variables
+
+Create a `.env` file (or provide env vars in your shell):
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+PORT=3000
+NODE_ENV=development
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=postgres
+
+PGADMIN_PORT=5050
+PGADMIN_DEFAULT_EMAIL=admin@example.com
+PGADMIN_DEFAULT_PASSWORD=admin
+```
+
+## Running with Docker
+
+1. Build and start services:
+
+```sh
+docker compose up --build --watch -d
+```
+
+2. Service URLs:
+
+- API: http://localhost:3000
+- PostgreSQL: localhost:5432
+- pgAdmin: http://localhost:5050
+
+## Running Locally (Without Docker)
+
+1. Install dependencies:
+
+```sh
+npm install
+```
+
+2. Ensure PostgreSQL is running and `DATABASE_URL` is set.
+
+3. Apply migrations:
+
+```sh
+npx prisma migrate dev
+```
+
+4. Start dev server:
+
+```sh
+npm run start:dev
+```
+
+## Useful Scripts
+
+- `npm run build` - Build the app
+- `npm run start` - Start app
+- `npm run start:dev` - Start in watch mode
+- `npm run lint` - Run ESLint with auto-fix
+- `npm run test` - Run unit tests
+- `npm run test:e2e` - Run e2e tests
 
 ## Project Structure
 
-- `src/` – Application source code
-- `test/` – End-to-end tests
-- `Dockerfile` – Docker build instructions
-- `docker-compose.yml` – Multi-service orchestration
+- `src/` - Application source code
+- `prisma/` - Prisma schema and migrations
+- `generated/prisma/` - Generated Prisma client output
+- `test/` - End-to-end tests
+- `docker-compose.yml` - API + DB + pgAdmin services
+- `Dockerfile` - API image for development
+
+## Notes
+
+- CORS is enabled for `http://localhost:5173`.
+- `ParseIntPipe` is used for `:id` route params.
+- The `User` model currently enforces unique `email` and unique `name`.
 
 ## Reference Material
 
-- <https://github.com/prisma/nestjs-workshop-prisma-day-22/tree/main>
+- https://github.com/prisma/nestjs-workshop-prisma-day-22/tree/main
