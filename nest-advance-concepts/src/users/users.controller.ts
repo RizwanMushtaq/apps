@@ -18,16 +18,6 @@ import { CreateUserDto } from './dtos/createUser.dto';
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Post()
-    @UseGuards(MockAuthGuard)
-    async create(@Body() createUserDto: CreateUserDto) {
-        const createUserInput = {
-            name: createUserDto.name,
-            email: createUserDto.email,
-        };
-        return this.usersService.create(createUserInput);
-    }
-
     @Get()
     async findAll() {
         return this.usersService.getAll();
@@ -36,6 +26,16 @@ export class UsersController {
     @Get(':id')
     async findOne(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.getUser(id);
+    }
+
+    @Post()
+    @UseGuards(MockAuthGuard)
+    async create(@Body() createUserDto: CreateUserDto) {
+        const createUserInput = {
+            name: createUserDto.name,
+            email: createUserDto.email,
+        };
+        return this.usersService.create(createUserInput);
     }
 
     @Patch(':id')
@@ -59,6 +59,7 @@ export class UsersController {
     }
 
     @Delete(':id')
+    @UseGuards(MockAuthGuard)
     async delete(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.delete(id);
     }

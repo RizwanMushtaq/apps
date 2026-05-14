@@ -1,8 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
     CreateUserInput,
     UpdateUserInput,
-    User,
     UserRepository,
 } from './repository/user.repository';
 
@@ -10,7 +9,7 @@ import {
 export class UsersService {
     constructor(private readonly userRepository: UserRepository) {}
 
-    async create(data: CreateUserInput): Promise<User> {
+    async create(data: CreateUserInput) {
         return this.userRepository.create(data);
     }
 
@@ -19,23 +18,15 @@ export class UsersService {
     }
 
     async getUser(id: number) {
-        const user = await this.userRepository.findById(id);
-        if (!user) {
-            throw new NotFoundException(
-                `User with unique input ${JSON.stringify(id)} not found`,
-            );
-        }
-        return user;
+        return await this.userRepository.findById(id);
     }
 
     async update(params: { id: number; data: UpdateUserInput }) {
         const { id, data } = params;
-        await this.getUser(id);
         return this.userRepository.update(id, data);
     }
 
     async delete(id: number) {
-        await this.getUser(id);
         return this.userRepository.delete(id);
     }
 }
