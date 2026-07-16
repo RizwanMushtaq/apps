@@ -7,6 +7,9 @@ tiktoken
 ibm-watsonx-ai
 langchain-ibm
 langchain
+langchain-community
+langchain-huggingface
+langchain-text-splitters
 pydantic
 pandas
 atlassian-python-api
@@ -17,3 +20,7 @@ InstructorEmbedding
 p4python
 lxml
 bs4
+tokenizers
+transformers
+sentence-transformers
+requests
