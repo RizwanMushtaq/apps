@@ -1,17 +1,11 @@
 from langchain_ollama import ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 llm = ChatOllama(model="phi", temperature=0.1)
 output_parser = StrOutputParser()
-prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            "You are an expert summarizer. Provide a concise summary of the following text in 2-3 sentences.",
-        ),
-        ("user", "Text to summarize:\n\n{text}"),
-    ]
+prompt = PromptTemplate.from_template(
+    "You are an expert summarizer. Provide a concise summary of the following text in 1 sentence.\n\n{text}"
 )
 
 chain = prompt | llm | output_parser
