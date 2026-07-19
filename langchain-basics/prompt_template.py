@@ -4,11 +4,11 @@ from langchain_core.prompts import PromptTemplate
 from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 
-llm = ChatOllama(model="llama3", temperature=0.7)
+llm = ChatOllama(model="phi", temperature=0.1)
 output_parser = StrOutputParser()
 
 string_template = PromptTemplate.from_template(
-    "You are an expert chef. Give me a 3-ingredient recipe using {ingredient}."
+    "You are an expert chef. Give me a 3-ingredient recipe using {ingredient}. Please provide the recipe in a single sentence."
 )
 
 chain = string_template | llm | output_parser
