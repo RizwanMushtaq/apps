@@ -1,6 +1,9 @@
 from langchain_core.documents import Document
 import pypdf
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import (
+    CharacterTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 
 
 def load_pdf(file_path: str) -> list[Document]:
@@ -26,7 +29,13 @@ print(f"Loaded {len(docs)} pages from the PDF.")
 # - chunk_size=200: Each chunk will contain approximately 200 characters
 # - chunk_overlap=20: Consecutive chunks will overlap by 20 characters to maintain context
 # - separator="\n": Text will be split at newline characters when possible
-text_splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20, separator="\n")
+character_text_splitter = CharacterTextSplitter(
+    chunk_size=200, chunk_overlap=20, separator="\n"
+)
+
+recursive_character_text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500, chunk_overlap=50, separators=["\n\n", "\n", ". ", " ", ""]
+)
 
 # Split the previously loaded document (PDF or other text) into chunks
 # The split_documents method:
@@ -34,9 +43,12 @@ text_splitter = CharacterTextSplitter(chunk_size=200, chunk_overlap=20, separato
 # 2. Splits each document's content based on the configured parameters
 # 3. Returns a new list of Document objects where each contains a chunk of text
 # 4. Preserves the original metadata for each chunk
-chunks = text_splitter.split_documents(docs)
+chunks = character_text_splitter.split_documents(docs)
+
+recursive_chunks = recursive_character_text_splitter.split_documents(docs)
 
 # Print the total number of chunks created
 # This shows how many smaller Document objects were generated from the original document(s)
 # The number depends on the original document length and the chunk_size setting
 print(f"Total chunks created: {len(chunks)}")
+print(f"Total recursive chunks created: {len(recursive_chunks)}")
