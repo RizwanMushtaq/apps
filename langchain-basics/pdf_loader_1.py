@@ -1,9 +1,10 @@
 from langchain_core.documents import Document
 import pypdf
-from langchain_text_splitters import (
-    CharacterTextSplitter,
-    RecursiveCharacterTextSplitter,
-)
+
+# from langchain_text_splitters import (
+#     CharacterTextSplitter,
+#     RecursiveCharacterTextSplitter,
+# )
 from langchain_ollama import __version__, OllamaEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 
