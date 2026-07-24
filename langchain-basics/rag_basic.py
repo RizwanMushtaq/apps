@@ -2,16 +2,19 @@ import wget
 
 import os
 
+from langchain_core.prompts import PromptTemplate
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_core.documents import Document
 import chromadb
 import hashlib
+from langchain_ollama import ChatOllama
 
 
 def get_chunk_id(text: str) -> str:
     return hashlib.md5(text.encode()).hexdigest()
 
 
+llm = ChatOllama(model="phi", temperature=0.1)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 
 filename = "companyPolicies.txt"
@@ -21,11 +24,11 @@ url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/6JDbUb
 collection = chroma_client.get_or_create_collection(name="my_collection")
 existing_docs = collection.get(where={"source": filename}, include=["metadatas"])
 
-exact_source_matches = []
-for metadata_list in existing_docs["metadatas"]:
-    for metadata in metadata_list:
-        if metadata.get("source") == filename:
-            exact_source_matches.append(metadata)
+exact_source_matches = [
+    metadata
+    for metadata in existing_docs["metadatas"]
+    if metadata.get("source") == filename
+]
 
 if exact_source_matches:
     print(f"Document already exists in the collection for source: {filename}")
@@ -67,4 +70,29 @@ results = collection.query(
 # print(results)
 
 context = "\n\n".join([doc for doc in results["documents"][0]])
-print(f"Context: {context}")
+# print(f"Context: {context}")
+
+prompt = PromptTemplate(
+    input_variables=["context", "question"],
+    template="""
+Use the context below to answer the question. Please answer in a concise 1 sentence. If the answer is not found in the context, please respond with "I don't know".
+Please summarize your answer in a single sentence.
+
+Context:
+{context}
+
+Question:
+{question}
+
+Answer:
+""",
+)
+
+chain = prompt | llm
+result = chain.invoke(
+    {
+        "context": context,
+        "question": "Tell me something about your culture in one sentence?",
+    }
+)
+print(f"Result: {result}")
